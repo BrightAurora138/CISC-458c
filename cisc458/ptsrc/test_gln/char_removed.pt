@@ -1,0 +1,5 @@
+program p (output);
+var c: char;
+begin
+	c := 'abc';
+end.
