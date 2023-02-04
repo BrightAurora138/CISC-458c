@@ -89,6 +89,7 @@ program ScannerParser(output, stdIdentifiers, scanSsl, parseSsl, source, parseSt
         lNewPage = 25;
         lEndFile = 26;
         lastCharClass = 26;
+	lPercent = 27;
 
         { Output Tokens }
         pDiv = 0;
@@ -380,7 +381,7 @@ program ScannerParser(output, stdIdentifiers, scanSsl, parseSsl, source, parseSt
         assert13 = 13;
         assert14 = 14;
         assert15 = 15;
-        assert16 = 16;
+	assert16 = 16;
         assert17 = 17;
 
         { Translator limits }
@@ -409,7 +410,7 @@ program ScannerParser(output, stdIdentifiers, scanSsl, parseSsl, source, parseSt
         { misc. }
         tab = '	';
         blank = ' ';
-        quote = '''';
+        quote = '"';
         null = 0;
 
         { Phase identification values - for use by common routines }
