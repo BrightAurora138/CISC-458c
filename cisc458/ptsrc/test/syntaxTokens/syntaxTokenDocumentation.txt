@@ -1,0 +1,40 @@
+ptColonEquals.pt     
+The token ':=' has been deleted and hence should no longer be recognised in Quby.
+The output should be .pColon and .pEquals. Separated as 2 individual tokens and not recognised as a combined pColonEquals.
+Expected Output / Actual Output:
+ .pColon
+ .pEquals
+ .pEndFile
+
+qubyDoubleEquals.pt  
+The token '==' has been added and should be recognised as a token: pDoubleEquals. 
+Not as 2 separated entities: pEquals and pEquals.
+Expected Output / Actual Output:
+ .pDoubleEquals
+ .pEndFile
+
+qubyNotEqual.pt   
+The token '!=' has been added to represent not equal, reusing the old/given pNotEqual token.
+The output should show 1 entity: pNotEqual.
+Expected Output / Actual Output:
+ .pNotEqual
+ .pNewLine
+ .pEndFile
+
+qubyOldNotEqual.pt   
+The token '<>' has been deleted and hence should no longer be recognised in Quby.
+The output should be .pLess and .pGreater. Separated as 2 individual tokens and not recognised as a combined pNotEqual.
+Expected Output / Actual Output:
+ .pLess
+ .pGreater
+ .pEndFile
+
+qubyUsing.pt
+The token 'using' has been added and should be recognised as a token.
+Expected Output / Actual Output:
+  .pIdentifier
+  % Output token text 'using'
+  .pIdentifier
+  % Output token text 'output'
+ .pSemicolon
+ .pEndFile

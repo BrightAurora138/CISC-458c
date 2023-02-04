@@ -9,25 +9,40 @@ div
 mod
 or
 and
-not
+% Removed not PT syntax token
+% not
 then
 else
 of
 end
-until
+% Removed until PT syntax token
+% until
 do
 array
 file
-program
-const
+% Removed program PT syntax token
+% program
+% Removed const PT syntax token
+% const
 var
 type
-procedure
-begin
+% Removed procedure PT syntax token
+% procedure
+% Removed begin PT syntax token
+% begin
 if
 case
 while
-repeat
+% Removed repeat PT syntax token
+% repeat 
+using % Add using Quby syntax token
+val % Add val Quby syntax token
+def % Add def Quby syntax token
+unless % Add unless Quby syntax token
+elsif % Add elsif Quby syntax token
+break % Add break Quby syntax token
+when % Add when Quby syntax token
+module % Add module Quby syntax token
 
 % End of keywords
 

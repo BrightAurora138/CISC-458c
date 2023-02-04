@@ -35,6 +35,11 @@ Input :
         lRightBracket   ']'
         lLeftBrace      '{'
         lRightBrace     '}'
+        lPercent        '%' % Add new input character class percent
+        lExclamation    '!' % Add new input character class exclamation
+        lQuestion       '?' % Add new input character class question
+        lDollar         '$' % Add new input character class dollar
+        lHash           '#' % Add new input character class hash
         lBlank
         lIllegal
         lNewLine
@@ -42,8 +47,7 @@ Input :
         lTab
         lNewPage 
         lEndFile
-        lastCharClass = lEndFile
-	lPerncent	'%';
+        lastCharClass = lEndFile;
 
 Output :
         % Keyword tokens -
@@ -55,26 +59,41 @@ Output :
         pMod
         pOr
         pAnd
-        pNot
+        % Removed pNot PT syntax token
+        % pNot
         pThen
         pElse
         pOf
         pEnd
-        pUntil
+        % Removed pUntil PT syntax token
+        % pUntil
         pDo
         pArray
         pFile
-        pProgram
-        pConst
+        % Removed pProgram PT syntax token
+        % pProgram
+        % Removed pConst PT syntax token
+        % pConst
         pVar
         pType
-        pProcedure
-        pBegin
+        % Removed pProcedure PT syntax token
+        % pProcedure
+        % Removed pBegin PT syntax token
+        % pBegin
         pIf
         pCase
         pWhile
-        pRepeat
-        lastKeywordToken = pRepeat
+        % Removed pRepeat PT syntax token
+        % pRepeat
+        pUsing % Add pUsing PT syntax token
+        pVal % Add pVal PT syntax token
+        pDef % Add pDef PT syntax token
+        pUnless % Add pUnless PT syntax token
+        pElsif % Add pElsif PT syntax token
+        pBreak % Add pBreak PT syntax token
+        pWhen % Add pWhen PT syntax token
+        pModule % Add pModule PT syntax token
+        lastKeywordToken = pModule
 
         % Scanner tokens -
         %   These are the tokens actually recognized by the Scanner itself.
@@ -94,7 +113,10 @@ Output :
         pPlus
         pMinus
         pStar
-        pColonEquals
+        % Remove PT syntax token pColonEquals
+        % pColonEquals
+        % Added non-compound output token pDoubleEquals
+        pDoubleEquals      
         pDot
         pComma
         pSemicolon
@@ -109,6 +131,11 @@ Output :
         pRightParen
         pLeftBracket
         pRightBracket
+        pPercent % Adding the output token for %
+        pNot  % Adding the output token for !
+        pQuestion % Adding the output token for ?
+        pDollar % Adding the output token for $
+        pHash % Adding the output token for #
         pDotDot
         lastSyntaxToken = pDotDot;
 
@@ -158,12 +185,14 @@ Scan :
             | ',':
                 .pComma
             | ':':
-                [
-                    | '=':
-                        .pColonEquals
-                    | *:
-                        .pColon
-                ]
+                .pColon
+                % Remove PT syntax token pColonEquals
+                %[
+                %    | '=':
+                %        .pColonEquals
+                %    | *:
+                %        .pColon
+                %]
             | lDigit:
                 oBufferSave
                 @Integer
@@ -175,7 +204,12 @@ Scan :
                     | *:
                 ]
             | '=':
-                .pEquals
+                [
+                    | '=':  % Added Quby syntax token pDoubleEquals
+                        .pDoubleEquals
+                    | *:
+                        .pEquals
+                ]
             | '+':
                 .pPlus
             | lQuote:
@@ -189,10 +223,24 @@ Scan :
                     | *:
                         .pDot
                 ]
+            | '!':          % Added ! as a choice
+                [    
+                    | '=':    % If bang is followed by =, then emit notEquals
+                        .pNotEqual
+                    | *:      % If bang is not followed by =, then emit not
+                        .pNot
+                ]
+            | '?':          % Added ? as a choice
+                .pQuestion
+            | '$':          % Added $ as a choice
+                .pDollar
+            | '#':          % Added # as a choice
+                .pHash
             | '<':
                 [
-                    | '>':
-                        .pNotEqual
+                    % Removed <> as pNotEqual, to use != instead ^
+                    % | '>':
+                    %     .pNotEqual
                     | '=':
                         .pLessEqual
                     | *:
@@ -207,6 +255,7 @@ Scan :
                 ]
             | '%':
                 @Comment
+                .pPercent
             | '*':
                 .pStar
             | lNewPage:
@@ -271,8 +320,14 @@ StringLiteral :
         ]};
 
 Comment :
+        % Discard the contents of a comment
+
         {[
             | lNewLine:
+                .pNewLine
+            | lEndFile:
+                #eCommentEOF
+                .pEndFile
                 >
             | *:
                 ?
