@@ -1,0 +1,51 @@
+ptBegin.pt
+The test is to check old PT token 'begin' has been deleted and should no longer be recognised as a token.
+
+ptConst.pt
+The test is to check old PT token 'const' has been deleted and should no longer be recognised as a token.
+
+ptNot.pt
+The test is to check old PT token 'not' has been deleted and should no longer be recognised as a token.
+
+ptProcedure.pt
+The test is to check old PT token 'procedure' has been deleted and should no longer be recognised as a token.
+
+ptProgram.pt
+The test is to check old PT token 'program' has been deleted and should no longer be recognised as a token.
+
+ptRepeat.pt
+The test is to check old PT token 'repeat' has been deleted and should no longer be recognised as a token.
+
+ptUntil.pt
+The test is to check old PT token 'until' has been deleted and should no longer be recognised as a token.
+
+ptCharIdenti.pt
+The test is to check old PT identifiers 'char' has been deleted and should no longer be recognised as a identifier.
+
+qubyBreak.pt
+The Quby token 'break' has been added and should be recognised as a token.
+
+qubyUsing.pt
+The Quby token 'using' has been added and should be recognised as a token.
+
+qubyDef.pt
+The Quby token 'def' has been added and should be recognised as a token.
+
+qubyElsif.pt
+The Quby token 'elsif' has been added and should be recognised as a token.
+
+qubyModule.pt
+The Quby token 'module' has been added and should be recognised as a token.
+
+qubyUnless.pt
+The Quby token 'unless' has been added and should be recognised as a token.
+
+qubyVal.pt
+The Quby token 'val' has been added and should be recognised as a token.
+
+qubyWhen.pt
+The Quby token 'when' has been added and should be recognised as a token.
+
+qubyStringIdenti.pt
+The Quby identifiers 'string' has been added and should be recognised as a identifier.
+
