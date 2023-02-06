@@ -1,0 +1,6 @@
+program p (output);
+var a: string;
+begin
+        a :="";
+        (*a is empty*)
+end.
