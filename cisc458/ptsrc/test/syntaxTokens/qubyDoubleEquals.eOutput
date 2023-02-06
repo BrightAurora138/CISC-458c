@@ -1,2 +1,5 @@
 #!/bin/bash
-ssltrace "ptc -o1 -t1 -L ../../lib/pt ./qubyDoubleEquals.pt" ../../lib/pt/scan.def -e
+# ssltrace "ptc -o1 -t1 -L ../../lib/pt ./qubyDoubleEquals.pt" ../../lib/pt/scan.def -e
+
+.pDoubleEquals
+.pEndFile

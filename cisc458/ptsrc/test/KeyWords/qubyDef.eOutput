@@ -1,2 +1,5 @@
 #!/bin/bash
-ssltrace "ptc -o1 -t1 -L ../../lib/pt ./qubyDef.pt" ../../lib/pt/scan.def -e
+#ssltrace "ptc -o1 -t1 -L ../../lib/pt ./qubyDef.pt" ../../lib/pt/scan.def -e
+
+.pIdentifier (screened to pDef)
+.pEndFile
