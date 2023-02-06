@@ -1,2 +1,9 @@
 #!/bin/bash
-ssltrace "ptc -o1 -t1 -L ../../lib/pt ./qubyUsing.pt" ../../lib/pt/scan.def -e
+# ssltrace "ptc -o1 -t1 -L ../../lib/pt ./qubyUsing.pt" ../../lib/pt/scan.def -e
+
+  .pIdentifier
+  % Output token text 'using'
+  .pIdentifier
+  % Output token text 'output'
+ .pSemicolon
+ .pEndFile

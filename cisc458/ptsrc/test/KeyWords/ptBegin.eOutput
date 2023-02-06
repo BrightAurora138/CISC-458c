@@ -1,2 +1,6 @@
 #!/bin/bash
-ssltrace "ptc -o1 -t1 -L ../../lib/pt ./ptBegin.pt" ../../lib/pt/scan.def -e
+#ssltrace "ptc -o1 -t1 -L ../../lib/pt ./ptBegin.pt" ../../lib/pt/scan.def -e
+
+.pIdentifier
+% Output token text 'begin'
+.pEndFile
