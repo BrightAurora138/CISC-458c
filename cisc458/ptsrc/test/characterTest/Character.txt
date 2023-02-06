@@ -1,0 +1,23 @@
+characterTest.pt
+The purpose of this test file is to check if the characters of %, !, ?, $, #, ” can be correctly recognized.
+Expected test result/Actual test result:
+ [ (lQuote)
+  [ (lPercent)
+  [ (lPercent)
+  ? (lPercent)
+  [ (lHash)
+  [ (lHash)
+  ? (lHash)
+  [ (lExclamation)
+  [ (lExclamation)
+  ? (lExclamation)
+  [ (lQuestion)
+  [ (lQuestion)
+  ? (lQuestion)
+  [ (lDollar)
+  [ (lDollar)
+  ? (lDollar)
+  [ (lQuote)
+  [ (lEndFile)
+  % Output token text '%#!?$'
+ [ (lEndFile)
