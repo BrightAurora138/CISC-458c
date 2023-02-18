@@ -22,26 +22,34 @@ Input :
         pMod                    'mod'
         pOr                     'or'
         pAnd                    'and'
-        pNot                    'not'
+        % pNot                    'not'
         pThen                   'then'
         pElse                   'else'
         pOf                     'of'
         pEnd                    'end'
-        pUntil                  'until'
+        % pUntil                  'until'
         pDo                     'do'
         pArray                  'array'
         pFile                   'file'
-        pProgram                'program'
-        pConst                  'const'
+        % pProgram                'program'
+        % pConst                  'const'
         pVar                    'var'
         pType                   'type'
-        pProcedure              'procedure'
-        pBegin                  'begin'
+        % pProcedure              'procedure'
+        % pBegin                  'begin'
         pIf                     'if'
         pCase                   'case'
         pWhile                  'while'
-        pRepeat                 'repeat'
-        lastKeywordToken = pRepeat 
+        % pRepeat                 'repeat'
+        pUsing                  'using'     % Add pUsing PT syntax token
+        pVal                    'val'       % Add pVal PT syntax token
+        pDef                    'def'       % Add pDef PT syntax token
+        pUnless                 'unless'    % Add pUnless PT syntax token
+        pElsif                  'elsif'     % Add pElsif PT syntax token
+        pBreak                  'break'     % Add pBreak PT syntax token
+        pWhen                   'when'      % Add pWhen PT syntax token
+        pModule                 'module'    % Add pModule PT syntax token
+        lastKeywordToken = pModule
 
         % Scanner tokens -
         %   These are the tokens actually recognized by the Scanner itself.
@@ -61,7 +69,8 @@ Input :
         pPlus                   '+'
         pMinus                  '-'
         pStar                   '*'
-        pColonEquals            ':='
+        % pColonEquals            ':='  % Remove pColonEquals PT syntax token
+        pDoubleEquals           '=='
         pDot                    '.'
         pComma                  ','
         pSemicolon              ';'
@@ -76,6 +85,11 @@ Input :
         pRightParen             ')'
         pLeftBracket            '['
         pRightBracket           ']'
+        pPercent                '%' % Adding the output token for %
+        pNot                    '!' % Adding the output token for !
+        pQuestion               '?' % Adding the output token for ?
+        pDollar                 '$' % Adding the output token for $
+        pHash                   '#' % Adding the output token for #
         pDotDot                 '..'
         lastSyntaxToken = pDotDot;
 
@@ -113,8 +127,15 @@ Output :
         sThen
         sElse
         sWhileStmt
-        sRepeatStmt
-        sRepeatEnd
+        % sRepeatStmt   % Removed
+        % sRepeatEnd    % Removed
+        sPublic
+        sModule
+        sDoStmt
+        sBreakIf
+        sSubstring
+        sLength
+        sIndex
         sEq
         sNE
         sLT
@@ -139,7 +160,7 @@ Output :
 rules
 
 Program :
-        'program'  .sProgram
+        'using'  .sProgram % Changed 'program' -> 'using'
         % program name
         pIdentifier
         % program parameters
@@ -162,7 +183,7 @@ Block :
         % We allow arbitrary intermixing of these instead to preserve
         % programmer sanity.
         {[
-            | 'const':
+            | 'val':
                 .sConst
                 @ConstantDefinitions
             | 'type':
@@ -171,7 +192,7 @@ Block :
             | 'var':
                 .sVar
                 @VariableDeclarations
-            | 'procedure':
+            | 'def':
                 .sProcedure
                 % procedure name
                 pIdentifier  .sIdentifier
@@ -180,8 +201,9 @@ Block :
             | *:
                 >
         ]}
-        'begin'
-        @BeginStmt;
+        % 'begin' % Removed
+        % @BeginStmt; % Removed
+        @Statement;
 
 ConstantDefinitions :
         % Accept one or more named constant definitions
@@ -313,26 +335,29 @@ ProcedureHeading :
         .sParmEnd;
 
 Statement :
-        [
+        .sBegin % Added begin identifier
+        {[
             | pIdentifier:
                 @AssignmentOrCallStmt
-            | 'begin':
-                @BeginStmt
+            % | 'begin': % Removed
+            %     @BeginStmt % Removed
             | 'if':
                 @IfStmt
             | 'while':
                 @WhileStmt
             | 'case':
                 @CaseStmt
-            | 'repeat':
-                @RepeatStmt
+            % | 'repeat': % Removed
+            %     @RepeatStmt % Removed
             | *:
-                .sNullStmt
-        ];
+                % .sNullStmt % Removed
+                > % Added exit
+        ]}
+        .sEnd; % Added end identifier
 
 AssignmentOrCallStmt :
         [
-            | ':=':
+            | '=': % Edited from ':=' to '='
                 .sAssignmentStmt
                 .sIdentifier    % identifier accepted in the Statement rule
                 @Expression
@@ -343,7 +368,7 @@ AssignmentOrCallStmt :
                 .sSubscript
                 @Expression
                 .sExpnEnd
-                ']'  ':='
+                ']'  '='
                 @Expression
                 .sExpnEnd
             | *:
@@ -379,17 +404,18 @@ CallStmt :
         ]
         .sParmEnd;
 
-BeginStmt :
-        .sBegin
-        {
-            @Statement
-            [
-                | ';':
-                | 'end':
-                    .sEnd
-                    >
-            ]
-        };
+% Revmoed BeginStmt because unnecessary
+%BeginStmt :
+%        .sBegin
+%        {
+%            @Statement
+%            [
+%                | ';':
+%                %| 'end': % Removed
+%                %    .sEnd % Removed
+%                    >
+%            ]
+%        };
 
 IfStmt :
         .sIfStmt
@@ -448,19 +474,19 @@ WhileStmt :
         'do'
         @Statement;
 
-RepeatStmt :
-        .sRepeatStmt
-        {
-            @Statement
-            [
-                | ';':
-                | 'until':
-                    .sRepeatEnd
-                    >
-            ]
-        }
-        @Expression
-        .sExpnEnd;
+%RepeatStmt : % Removed RepeatStmt
+%        .sRepeatStmt
+%        {
+%            @Statement
+%            [
+%                | ';':
+%                % | 'until': % Removed
+%                %    .sRepeatEnd % Removed
+%                    >
+%            ]
+%        }
+%        @Expression
+%        .sExpnEnd;
 
 Expression :
         @SimpleExpression
@@ -524,7 +550,7 @@ Factor :
                 .sInteger
             | '(':
                 @Expression  ')'
-            | 'not':
+            | '!':
                 @Factor
                 .sNot
             | pStringLiteral:
