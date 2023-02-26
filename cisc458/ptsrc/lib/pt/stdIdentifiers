@@ -1,8 +1,8 @@
-% Keywords and predeclared identifiers of PT Pascal 
+% Keywords and predeclared identifiers of PT Pascal
 % Version 5.0 - 10 Dec 2020
 
-% Language keywords 
-%   These must be in the exact same order as the keyword token definitions 
+% Language keywords
+%   These must be in the exact same order as the keyword token definitions
 %   in the Output section of scan.ssl and the Input section of parser.ssl
 
 div
@@ -34,7 +34,7 @@ if
 case
 while
 % Removed repeat PT syntax token
-% repeat 
+% repeat
 using % Add using Quby syntax token
 val % Add val Quby syntax token
 def % Add def Quby syntax token
@@ -47,12 +47,14 @@ module % Add module Quby syntax token
 % End of keywords
 
 % Predeclared identifiers
-%   These must be in the exact same order as the PredeclaredId 
-%   type definition in semantic.ssl.  
+%   These must be in the exact same order as the PredeclaredId
+%   type definition in semantic.ssl.
 
 % Predeclared type names
 integer
-char
+% Remove odd PT keywords char and add new Quby Keywords String
+%char
+string
 boolean
 text
 

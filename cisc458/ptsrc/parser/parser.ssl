@@ -368,7 +368,7 @@ AssignmentOrCallStmt :
                 .sSubscript
                 @Expression
                 .sExpnEnd
-                ']'  '='
+                ']'  %':='
                 @Expression
                 .sExpnEnd
             | *:
@@ -550,9 +550,9 @@ Factor :
                 .sInteger
             | '(':
                 @Expression  ')'
-            | '!':
-                @Factor
-                .sNot
+            % | 'not': % Removed
+            %     @Factor % Removed
+            %     .sNot % Removed
             | pStringLiteral:
                 .sStringLiteral
             | 'file':
