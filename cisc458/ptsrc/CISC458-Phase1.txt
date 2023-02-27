@@ -1,4 +1,4 @@
-﻿1. Keywords
+1. Keywords
 * In stdIdentifiers file, old PT syntax tokens were removed (not, until, program, const, procedure, begin and repeat). Then the new PT syntax tokens were added (using, val, def, unless, elsif, break, when and module).
 * In scan.ssl, under the Output keyword section, the old PT Pascal output tokens were removed (pNot, pUntil, pProgram, pConst, pProcedure, pBegin and pRepeat). Then the new PT Pascal output tokens were added (pUsing, pVal, pDef, pUnless, pElsif, pBreak, pWhen and pModule).
 * In the stdIdentifiers file, the old PT predefined identifier was removed (char) and the new Quby predefined identifier was added at line 46 (String)
@@ -33,3 +33,31 @@
 * In the scan block of scan.ssl, 2 choices have been edited. For PT, when detecting ‘{‘, it should call Comment, while for Quby, when encountered with ‘%’, the Comment edited before should be called. Also, as the (**) format comment is no longer accepted, when detecting ‘(‘, it should simply emit pLeftParen without any condition.
 * The test for new comment is included in a string test.
 * 2 more examples are included to prove the old pt comments have been removed.
+
+General Strategy
+- Remove the old PT parser output tokens and add the new Quby parser output tokens.
+
+Programs
+- Modify the Program rule to meet Quby language specifications
+- Change the main loop of the Block rule to accept a sequence of any number of declarations or statements in any order.
+    - Merge the alternatives in the existing Statement rule into the alternatives in the Block rule to be able to do this.
+- Make difference in Quby less visible to semantic phase -> Output Quby seuqnece of declarations and statements as PT Pascal begin...end
+    - Emit an sBegin token before the sequence (beginning of Block rule)
+    - Emit an sEnd after the sequence (end of Block rule)
+
+Declarations
+- Modify the parsing of constant, type and variable declarations to meet Quby language spec
+- Output token streams == equivalent PT declarations
+- If more than 1 identifier declared in a single Quby var declaration, then output each as an sVar token
+
+Routines (Procedures)
+- Modify parsing of routines (PT procedures, Quby functions) to meet Quby language specifications
+    - Output token stream for function == PT procedure
+    - sBegin and sEnd
+    - * indicates sPublic function
+
+Modules
+- Add parsing of modules as specified in the Quby language specifications
+- <See write up>
+
+Statements

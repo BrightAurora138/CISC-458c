@@ -1,4 +1,3 @@
-using output;
-
-var v : string;
-type t : integer;
+using input
+var v: string
+type t: integer

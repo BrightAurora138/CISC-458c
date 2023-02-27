@@ -164,7 +164,6 @@ Program :
         % program name
         pIdentifier
         % program parameters
-        '('
         {
             pIdentifier  .sIdentifier
             [
@@ -173,9 +172,8 @@ Program :
                     >
             ]
         }
-        ')'
         .sParmEnd
-        ';'  @Block  '.';
+        @Block; % Quby has no semicolons and does not use periods after end of program. 
 
 Block :
         % Strictly speaking, standard Pascal requires that declarations
@@ -197,7 +195,10 @@ Block :
                 % procedure name
                 pIdentifier  .sIdentifier
                 @ProcedureHeading
-                @Block  ';'
+                @Block
+                'end'
+            | ';':
+                .sNullStmt
             | *:
                 >
         ]}
@@ -208,16 +209,10 @@ Block :
 ConstantDefinitions :
         % Accept one or more named constant definitions
         pIdentifier  .sIdentifier
-        '=' @ConstantValue ';'
-        {[
-            | pIdentifier:
-                .sIdentifier
-                '=' @ConstantValue ';'
-            | *:
-                >
-        ]};
+        @ConstantValue;  % Remove ability to have multiple constant type declaration with only one keyword. Quby requires 'con' keyword to be repeated for each declaration.
 
 ConstantValue :
+        '='
         [
             | pInteger:
                 .sInteger
@@ -243,14 +238,8 @@ UnsignedIntegerConstant :
 TypeDefinitions :
         % Accept one or more named type definitions.
         pIdentifier  .sIdentifier
-        '='  @TypeBody  ';'
-        {[
-            | pIdentifier:
-                .sIdentifier
-                '='  @TypeBody  ';'
-            | *:
-                >
-        ]};
+        ':'  @TypeBody % Look for colon, and no longer expect semicolon
+        ; % Remove ability to have multiple declarations under one 'type' keyword
 
 TypeBody :
         [
@@ -297,14 +286,8 @@ OptionallySignedIntegerConstant :
 VariableDeclarations :
         % Accept one or more variable declarations.
         pIdentifier  .sIdentifier
-        ':'  @TypeBody  ';'
-        {[
-            | pIdentifier:
-                .sIdentifier
-                ':'  @TypeBody  ';'
-            | *:
-                >
-        ]};
+        ':'  @TypeBody  % don't expect semicolon
+        ; % Remove ability to have multiple var declarations after each other  
 
 ProcedureHeading :
         % Accept zero or more procedure formal parameter declarations.
@@ -323,7 +306,7 @@ ProcedureHeading :
                     % type identifier
                     pIdentifier  .sIdentifier
                     [
-                        | ';':
+                        | ',':
                         | *:
                             >
                     ]
@@ -331,7 +314,6 @@ ProcedureHeading :
                 ')'
             | *:
         ]
-        ';'
         .sParmEnd;
 
 Statement :
@@ -404,7 +386,7 @@ CallStmt :
         ]
         .sParmEnd;
 
-% Revmoed BeginStmt because unnecessary
+% Removed BeginStmt because unnecessary
 %BeginStmt :
 %        .sBegin
 %        {
