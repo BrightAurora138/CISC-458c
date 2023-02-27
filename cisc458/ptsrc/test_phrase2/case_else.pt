@@ -1,0 +1,13 @@
+using output p;
+var a: integer;
+    b: integer;
+begin
+    a = 1
+    b = 2
+    case a
+        when 1 then
+            a = a + 1
+        else
+            b = b + 1
+    end
+end.

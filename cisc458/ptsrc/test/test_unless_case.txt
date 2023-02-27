@@ -1,7 +1,0 @@
-unless_else.pt
-This example aims at testing unless… else clause
-Unless can be identified and else is valid here.
-
-case_else.pt
-This example aims at testing case… else clause
-else can be identified and is valid inside a case clause.

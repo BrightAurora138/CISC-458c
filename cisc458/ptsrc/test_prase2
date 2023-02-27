@@ -1,0 +1,13 @@
+unless_else.pt
+This example aims at testing unless… else clause
+Unless can be identified and else is valid here. Some integers are used.
+
+case_else.pt
+This example aims at testing case… else clause
+else can be identified and is valid inside a case clause.
+
+Casetest.pt
+This example includes a case clause with 2 branches, proving an usual case clause without else can be properly processed by the compiler.
+
+Unlesstest.pt
+This example aims to test an unless clause without else is processed as expected. A boolean and an integer is used.
