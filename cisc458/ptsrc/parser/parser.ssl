@@ -76,7 +76,7 @@ Input :
         pSemicolon              ';'
         pColon                  ':'
         pEquals                 '='
-        pNotEqual               '<>'
+        pNotEqual               '!='
         pLess                   '<'
         pLessEqual              '<='
         pGreaterEqual           '>='
@@ -98,8 +98,8 @@ Output :
         firstSemanticToken = sIdentifier
         firstCompoundSemanticToken = sIdentifier
         sInteger
-        sStringLiteral
-        lastCompoundSemanticToken = sStringLiteral
+        sLiteral
+        lastCompoundSemanticToken = sLiteral
 
         sProgram
         sParmBegin
@@ -231,7 +231,7 @@ ConstantValue :
             | '+':
                 @UnsignedIntegerConstant
             | pStringLiteral:
-                .sStringLiteral
+                .sLiteral
         ];
 
 UnsignedIntegerConstant :
@@ -432,23 +432,20 @@ IfStmt :
         %         .sElse
         %         @Statement
         %     | *:
-        % ]
-        {
-            [
-                | 'elsif':
-                    .sElsif
-                    @Expression
-                    .sExpnEnd
-                    'then'
-                    .sThen
-                    @Statement
-                | 'else':
-                    .sElse
-                    @Statement
-                | 'end':
-                    >
-            ]
-        }; % Add if else statement
+        % ] 
+        [
+            | 'else':
+                .sElse
+                @Statement
+            | 'elsif':
+                .sElsif
+                @Expression
+                .sExpnEnd
+                'then'
+                .sThen
+                @Statement
+            | *:
+        ]; % Add if else statement
 
 CaseStmt :
         .sCaseStmt
@@ -497,21 +494,10 @@ WhileStmt :
 DoStmt :
         % Add Do statement
         .sDo
-        {
-            @Statement
-            [
-                | 'break':
-                    [
-                        | 'if':                        
-                            .sBreakIf
-                            @Expression
-                            .sExpnEnd
-                        | *:
-                    ]
-                | 'end':
-                    >
-            ]
-        };
+        @Statement
+        'break' 'if' .sBreakIf @Expression .sExpnEnd
+        @Statement
+        'end';
         
 
 %RepeatStmt : % Removed RepeatStmt
@@ -531,9 +517,9 @@ DoStmt :
 Expression :
         @SimpleExpression
         [
-            | '=':
+            | '==':
                 @SimpleExpression  .sEq
-            | '<>':
+            | '!=':
                 @SimpleExpression  .sNE
             | '<':
                 @SimpleExpression  .sLT
@@ -587,7 +573,7 @@ Substring :
         @Factor
         {[
             | '$':
-                @Factor .sSubstring % Add '$'
+                @Factor '..' @Factor .sSubstring % Add '$'
             | *:
                 >
         ]};
@@ -605,9 +591,10 @@ Factor :
             %     @Factor % Removed
             %     .sNot % Removed
             | '#':
+                @Factor
                 .sLength % Add '#'
             | pStringLiteral:
-                .sStringLiteral
+                .sLiteral
             | 'file':
                 .sFile '(' @Expression ')'
                 .sExpnEnd
