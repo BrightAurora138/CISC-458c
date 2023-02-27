@@ -1,0 +1,5 @@
+using output
+mod DeclarationsAndStatement
+   var x : integer
+   x = 27
+end

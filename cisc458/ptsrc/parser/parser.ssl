@@ -10,7 +10,7 @@
 %     and emits a postfix stream of tokens to the semantic analyzer
 %     module.  The parser detects and repairs syntax errors so that the
 %     token stream emitted to the semantic analyzer is syntactically
-%     legal (except for the special case of declaration phase errors - 
+%     legal (except for the special case of declaration phase errors -
 %     see the comment in the Block routine below).
 
 Input :
@@ -54,15 +54,15 @@ Input :
         % Scanner tokens -
         %   These are the tokens actually recognized by the Scanner itself.
 
-        % Compound tokens - 
+        % Compound tokens -
         %   These will be sent to the parser with a value or index.
-        pIdentifier 
+        pIdentifier
         firstCompoundInputToken = pIdentifier
         pInteger
         pStringLiteral
         lastCompoundInputToken = pStringLiteral
 
-        % Non-compound tokens - 
+        % Non-compound tokens -
         %   These tokens simply represent themselves.
         pNewLine
         pEndFile
@@ -94,7 +94,7 @@ Input :
         lastSyntaxToken = pDotDot;
 
 Output :
-        sIdentifier 
+        sIdentifier
         firstSemanticToken = sIdentifier
         firstCompoundSemanticToken = sIdentifier
         sInteger
@@ -192,12 +192,22 @@ Block :
             | 'var':
                 .sVar
                 @VariableDeclarations
+            | 'mod':                      % Add parsing of modules
+                .sModule
+                pIdentifier .sIdentifier
+                @Block                    % re-use the Block rule
+                'end'
             | 'def':
                 .sProcedure
                 % procedure name
                 pIdentifier  .sIdentifier
+               % [
+               %    | *:
+               %         .sPublic
+               % ]
                 @ProcedureHeading
-                @Block  ';'
+                @Block
+                'end'
             | *:
                 >
         ]}
@@ -339,16 +349,18 @@ Statement :
         {[
             | pIdentifier:
                 @AssignmentOrCallStmt
-            % | 'begin': % Removed
+            % | 'begin': % Removed begin because no longer in Quby
             %     @BeginStmt % Removed
             | 'if':
                 @IfStmt
-            | 'while':
-                @WhileStmt
+            | 'unless':  % Add unless statement
+                @UnlessStmt
             | 'case':
                 @CaseStmt
+            | 'do':      % Add do statement
+                @DoStmt
             % | 'repeat': % Removed
-            %     @RepeatStmt % Removed
+            %     @RepeatStmt % Removed repeat because no longer in Quby
             | *:
                 % .sNullStmt % Removed
                 > % Added exit
@@ -430,6 +442,22 @@ IfStmt :
             | *:
         ];
 
+UnlessStmt :
+        .sIfStmt
+        @Expression
+        .sNot
+        .sExpnEnd
+        'then'  .sThen
+        @Statement
+        [
+            | 'else':
+                .sElse
+                @Statement
+            | *:
+        ];
+DoStmt :
+        'end';
+
 CaseStmt :
         .sCaseStmt
         @Expression
@@ -447,6 +475,10 @@ CaseStmt :
                     | *:
                         @CaseAlternative
                 ]
+            | 'else':
+                .sElse
+                @Statement
+                >
             | 'end':
                 >
         ]}
