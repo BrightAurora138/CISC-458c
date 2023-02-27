@@ -438,17 +438,17 @@ UnlessStmt :
         .sNot
         .sExpnEnd
         'then'  .sThen
-        @Statement
+        @Block
         [
             | 'else':
                 .sElse
-                @Statement
+                @Block
             | *:
         ];
 
 CaseStmt :
         .sCaseStmt
-        @Expression
+        @Block
         .sExpnEnd
         'of'
         @CaseAlternative
@@ -465,7 +465,7 @@ CaseStmt :
                 ]
             | 'else':
                 .sElse
-                @Statement
+                @Block
                 >
             | 'end':
                 >
@@ -477,16 +477,25 @@ CaseAlternative :
         % A case alternative is a statement labelled by
         % one or more optionally signed integer constants
 
-        {
+        {   
             @OptionallySignedIntegerConstant
             [
-                | ',':
+                | pInteger:
+                .sInteger
+                | pStringLiteral:
+                .sStringLiteral
+                %| ',':
+                | pIdentifier:
+                .sIdentifier
+                |'then':
+                @Block
                 | *:
                     >
             ]
         }
-        .sLabelEnd
-        ':'  @Statement;
+        %.sLabelEnd
+        %'then' @Block;
+
 
 WhileStmt :
         .sWhileStmt

@@ -1,66 +1,66 @@
-.pIdentifier
+  .sFieldWidth
   % Output token text 'using'
-  .pIdentifier
+  .sFieldWidth
   % Output token text 'output'
-  .pIdentifier
+  .sFieldWidth
   % Output token text 'p'
- .pSemicolon
- .pNewLine
-  .pIdentifier (screened to pVar)
-  .pIdentifier
+ .sGT
+ .sElse
+  .sFieldWidth (screened to sEnd)
+  .sFieldWidth
   % Output token text 'a'
- .pColon
-  .pIdentifier
+ .sGE
+  .sFieldWidth
   % Output token text 'boolean'
- .pSemicolon
- .pNewLine
-  .pIdentifier
+ .sGT
+ .sElse
+  .sFieldWidth
   % Output token text 'b'
- .pColon
-  .pIdentifier
+ .sGE
+  .sFieldWidth
   % Output token text 'integer'
- .pSemicolon
- .pNewLine
-  .pIdentifier
+ .sGT
+ .sElse
+  .sFieldWidth
   % Output token text 'begin'
- .pNewLine
-  .pIdentifier
+ .sElse
+  .sFieldWidth
   % Output token text 'a'
- .pEquals
-  .pIdentifier
+ .sAdd
+  .sFieldWidth
   % Output token text 'true'
- .pNewLine
-  .pIdentifier
+ .sElse
+  .sFieldWidth
   % Output token text 'b'
- .pEquals
-  .pInteger
+ .sAdd
+  .sIfStmt
   % Output token text '2'
- .pNewLine
-  .pIdentifier
+ .sElse
+  .sFieldWidth
   % Output token text 'unless'
-  .pIdentifier
+  .sFieldWidth
   % Output token text 'a'
-  .pIdentifier (screened to pThen)
- .pNewLine
-  .pIdentifier
+  .sFieldWidth (screened to sParmBegin)
+ .sElse
+  .sFieldWidth
   % Output token text 'b'
- .pEquals
-  .pIdentifier
+ .sAdd
+  .sFieldWidth
   % Output token text 'b'
- .pPlus
-  .pInteger
+ .sRepeatStmt
+  .sIfStmt
   % Output token text '1'
- .pNewLine
-  .pIdentifier
+ .sElse
+  .sFieldWidth
   % Output token text 'a'
- .pEquals
- .pNot
-  .pIdentifier
+ .sAdd
+ .sEndOfFile
+  .sFieldWidth
   % Output token text 'a'
- .pNewLine
-  .pIdentifier (screened to pEnd)
- .pNewLine
-  .pIdentifier (screened to pEnd)
- .pDot
- .pNewLine
- .pEndFile
+ .sElse
+  .sFieldWidth (screened to sType)
+ .sElse
+  .sFieldWidth (screened to sType)
+ .sLT
+ .sElse
+ .sWhileStmt
