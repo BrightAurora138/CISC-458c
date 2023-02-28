@@ -1,0 +1,16 @@
+ .sProgram
+ .sIdentifier
+ .sParmEnd
+  .sModule
+  .sIdentifier
+   .sVar
+    .sIdentifier
+      .sIdentifier
+    .sBegin
+     .sAssignmentStmt
+     .sIdentifier
+         .sInteger
+     .sExpnEnd
+    .sEnd
+   .sBegin
+   .sEnd

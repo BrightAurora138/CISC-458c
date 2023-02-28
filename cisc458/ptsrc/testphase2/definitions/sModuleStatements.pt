@@ -1,0 +1,4 @@
+using output
+mod moduleName
+   x = 10
+end
