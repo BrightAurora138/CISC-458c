@@ -1,0 +1,12 @@
+ .sProgram
+ .sIdentifier
+ .sParmEnd
+  .sVar
+   .sIdentifier
+  .sVar
+   .sIdentifier
+  .sVar
+   .sIdentifier
+     .sIdentifier
+   .sBegin
+   .sEnd

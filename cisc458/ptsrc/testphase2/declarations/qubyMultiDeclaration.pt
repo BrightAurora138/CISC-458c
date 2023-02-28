@@ -1,0 +1,4 @@
+using output
+val a = 1
+typ t: integer
+var e: integer

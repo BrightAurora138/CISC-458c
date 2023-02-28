@@ -1,0 +1,8 @@
+ .sProgram
+ .sIdentifier
+ .sParmEnd
+  .sConst
+   .sIdentifier
+    .sInteger
+   .sBegin
+   .sEnd
