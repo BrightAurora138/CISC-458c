@@ -1,0 +1,20 @@
+sModule.pt
+Test
+Test case to ensure that new PT keyword "mod" is able to be parsed by Quby.
+
+sPublic.pt
+Test case to ensure that new PT keyword "pub" is able to be parsed by Quby.
+
+sRepeatEnd.pt
+Test case to ensure that old PT keyword "until" no longer works.
+
+sRepeatStmt.pt
+Test case to ensure that old PT keyword "repeat" no longer works.
+
+sSubstring.pt
+Test case to ensure that a substring is able to be parsed by Quby.
+
+sDoStmt.pt
+sBreakIf.pt
+sLength.pt
+sIndex.pt

@@ -1,0 +1,29 @@
+example.pt
+Example given in the Assignment 2 writeup.
+
+example2.pt
+Example 2 given in the Assignment 2 writeup.
+
+ptConstDeclaration.pt
+Test case to ensure old PT Style constant variable declaration using "const" keyword is no longer accepted by the Quby parser.
+Quby implements the constant variable declaration using the "val" keyword as seen in sValDeclaration.pt test case.
+
+ptMultiConstDeclaration.pt
+Test case to ensure old PT Style constant variable declaration using "const" keyword is no longer accepted by the Quby parser when used to declare multiple declarations.
+Quby implements the constant variable declaration using the "val" keyword as seen in sValDeclaration.pt test case.
+
+ptMultiVarDeclaration.pt
+Test case to ensure variable declaration using "var" keyword is no longer accepted by the Quby parser when used *consecutively*.
+Quby requires the "var" keyword to be repeated for each declaration, unlike the PT parser which allow multiple declarations under a single "var" keyword.
+
+qubyMultiDeclaration.pt
+Test to ensure that the Quby parser has no issues parsing multiple declaration statements consecutively (versus just one declaration statement in a block).
+
+sTypeDeclaration.pt
+Test to ensure that the Quby parser is able to accept type.
+
+sValDeclaration.pt
+Test case to ensure the Quby parser accepts a constant variable declaration using the "val" keyword.
+
+sVarDeclaration.pt
+Test case to ensure the Quby parser accepts a variable declaration using the "var" keyword.
