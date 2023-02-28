@@ -1,5 +1,0 @@
-using output
-mod moduleName
-   var x : integer
-   x = 10
-end

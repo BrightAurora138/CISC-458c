@@ -1,4 +1,0 @@
-using output
-mod moduleName
-   var x : integer
-end
