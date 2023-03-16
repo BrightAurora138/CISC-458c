@@ -211,7 +211,7 @@ program SemanticAnalysis (output, semanticSsl, parseStream, temp, tCode, options
         tVarParm = 21;
         tFetchAddress = 22;
         tFetchInteger = 23;
-        tFetchChar = 24;
+        tFetchString = 24; % Asg 3 tFetchedChar -> tFetchString
         tFetchBoolean = 25;
         tAssignBegin = 26;
         tAssignAddress = 27;
