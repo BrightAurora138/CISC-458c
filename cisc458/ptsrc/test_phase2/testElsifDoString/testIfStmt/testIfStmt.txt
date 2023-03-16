@@ -1,0 +1,8 @@
+testElse.pt
+This file tests if quby can handle the else condition.
+
+testElsif.pt
+This file tests if quby can handle the else if condition.
+
+testMultiElsif.pt
+This file tests if quby can handle the mutiple elsif condition.

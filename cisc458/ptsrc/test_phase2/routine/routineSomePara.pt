@@ -1,0 +1,3 @@
+using output
+def P(var x:integer, var y:integer)
+end

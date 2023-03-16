@@ -1,0 +1,8 @@
+testStringIndex.pt
+This file tests "?" to make sure ruby can handle this operators.
+
+testStringLength.pt
+This file tests "#" to make sure ruby can handle this operators.
+
+testStringSubString.pt
+This file tests "$" to make sure ruby can handle this operators.

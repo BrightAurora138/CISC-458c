@@ -1,0 +1,12 @@
+using output
+begin
+    a = 1
+    b = 2
+    case a
+        when 1 then
+            a = a + 1
+        when 2 then
+            b = b + 1
+        else
+            a = a + b
+    end

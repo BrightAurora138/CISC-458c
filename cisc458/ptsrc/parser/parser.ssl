@@ -22,26 +22,46 @@ Input :
         pMod                    'mod'
         pOr                     'or'
         pAnd                    'and'
-        pNot                    'not'
+        %% REMOVED
+        %pNot                    'not'
+        %%
         pThen                   'then'
         pElse                   'else'
         pOf                     'of'
         pEnd                    'end'
-        pUntil                  'until'
+        %% REMOVED
+        %pUntil                  'until'
+        %%
         pDo                     'do'
         pArray                  'array'
         pFile                   'file'
-        pProgram                'program'
-        pConst                  'const'
+        %% REMOVED
+        %pProgram                'program'
+        %pConst                  'const'
+        %%
         pVar                    'var'
         pType                   'type'
-        pProcedure              'procedure'
-        pBegin                  'begin'
+        %% REMOVED
+        %pProcedure              'procedure'
+        %pBegin                  'begin'
+        %%
         pIf                     'if'
         pCase                   'case'
         pWhile                  'while'
-        pRepeat                 'repeat'
-        lastKeywordToken = pRepeat 
+        %% REMOVED
+        %pRepeat                 'repeat'
+        %%
+        %% ADDED
+        pUsing                  'using'
+        pVal                    'val'
+        pDef                    'def'
+        pUnless                 'unless'
+        pElsif                  'elsif'
+        pBreak                  'break'
+        pWhen                   'when'
+        pModule                 'module'
+        %%
+        lastKeywordToken = pModule 
 
         % Scanner tokens -
         %   These are the tokens actually recognized by the Scanner itself.
@@ -61,13 +81,20 @@ Input :
         pPlus                   '+'
         pMinus                  '-'
         pStar                   '*'
-        pColonEquals            ':='
+        %% REMOVED
+        %pColonEquals            ':='
+        %%
         pDot                    '.'
         pComma                  ','
         pSemicolon              ';'
         pColon                  ':'
         pEquals                 '='
-        pNotEqual               '<>'
+        %% REMOVED
+        %pNotEqual               '<>'
+        %%
+        %% ADDED
+        pNotEqual               '!='
+        %%
         pLess                   '<'
         pLessEqual              '<='
         pGreaterEqual           '>='
@@ -77,7 +104,16 @@ Input :
         pLeftBracket            '['
         pRightBracket           ']'
         pDotDot                 '..'
-        lastSyntaxToken = pDotDot;
+        %% ADDED
+        pLeftBrace              '}'
+        pRightBrace             '{'
+        pDoubleEquals           '=='
+        pNot                    '!'
+        pQuestion               '?'
+        pDollar                 '$'
+        pHash                   '#'
+        %%
+        lastSyntaxToken = pHash;
 
 Output :
         sIdentifier 
@@ -113,8 +149,10 @@ Output :
         sThen
         sElse
         sWhileStmt
-        sRepeatStmt
-        sRepeatEnd
+        %% REMOVED
+        %sRepeatStmt
+        %sRepeatEnd
+        %%
         sEq
         sNE
         sLT
@@ -133,17 +171,34 @@ Output :
         sNot
         sNewLine
         sEndOfFile
-        lastSemanticToken = sEndOfFile;
+        %% ADDED
+        sPublic
+        sModule
+        sDoStmt
+        sBreakIf
+        sSubstring
+        sLength
+        sIndex
+        %%
+        lastSemanticToken = sIndex;
 
 
 rules
 
 Program :
-        'program'  .sProgram
+        %% REMOVED
+        %'program'  .sProgram
+        %%
+        %% ADDED
+        'using'  .sProgram
+        %%
+
         % program name
-        pIdentifier
+        % pIdentifier
         % program parameters
-        '('
+        %% REMOVED
+        %'('
+        %%
         {
             pIdentifier  .sIdentifier
             [
@@ -152,17 +207,30 @@ Program :
                     >
             ]
         }
-        ')'
+        %% REMOVED
+        %')'
+        %%
         .sParmEnd
-        ';'  @Block  '.';
+
+        %% REMOVED
+        %';'  @Block  '.';
+        %%
+        %% ADDED
+        @Block;
+        %%
+
 
 Block :
         % Strictly speaking, standard Pascal requires that declarations
         % appear only in the order consts, types, vars, procedures.
         % We allow arbitrary intermixing of these instead to preserve
         % programmer sanity.
+
+        %% ADDED
+        .sBegin
+        %%
         {[
-            | 'const':
+            | 'val':
                 .sConst
                 @ConstantDefinitions
             | 'type':
@@ -171,29 +239,83 @@ Block :
             | 'var':
                 .sVar
                 @VariableDeclarations
-            | 'procedure':
+            %% REMOVED
+            %| 'procedure':
+            %    .sProcedure
+            %    % procedure name
+            %    pIdentifier  .sIdentifier
+            %    @ProcedureHeading
+            %    @Block  ';'
+            %%
+            %% ADDED
+            | 'def':
                 .sProcedure
                 % procedure name
-                pIdentifier  .sIdentifier
+                [
+                    | pStar:
+                        pIdentifier  .sIdentifier   .sPublic
+                    | *:
+                        pIdentifier  .sIdentifier
+                ]
                 @ProcedureHeading
-                @Block  ';'
+                @Block
+                'end'
+            %%
+            %% ADDED
+            | pIdentifier:
+                @AssignmentOrCallStmt
+            | 'if':
+                @IfStmt
+                'end'
+            | 'while':
+                @WhileStmt
+            | 'case':
+                @CaseStmt
+            | 'do':
+                @DoStmt
+            | 'unless':
+                @UnlessStmt
+            | 'module':
+                .sModule
+                pIdentifier .sIdentifier
+                @Block
+                'end'
+            | ';' :
+                .sNullStmt
+            %% REMOVED
+            % | *:
+            %    .sNullStmt 
+            %%
             | *:
-                >
+               >
         ]}
-        'begin'
-        @BeginStmt;
+        %% REMOVED
+        %'begin'
+        %@BeginStmt;
+        %% 
+
+        %% ADDED
+        .sEnd ;
+        %%
 
 ConstantDefinitions :
         % Accept one or more named constant definitions
         pIdentifier  .sIdentifier
-        '=' @ConstantValue ';'
-        {[
-            | pIdentifier:
-                .sIdentifier
-                '=' @ConstantValue ';'
-            | *:
-                >
-        ]};
+
+        %% REMOVED
+        % '=' @ConstantValue ';' ;
+        %{[
+        %    | pIdentifier:
+        %        .sIdentifier
+        %        '=' @ConstantValue ';'
+        %    | *:
+        %        >
+        %]};
+        %%
+
+        %% ADDED
+        '=' @ConstantValue ;
+        %%
 
 ConstantValue :
         [
@@ -221,14 +343,20 @@ UnsignedIntegerConstant :
 TypeDefinitions :
         % Accept one or more named type definitions.
         pIdentifier  .sIdentifier
-        '='  @TypeBody  ';'
-        {[
-            | pIdentifier:
-                .sIdentifier
-                '='  @TypeBody  ';'
-            | *:
-                >
-        ]};
+
+        %% ADDED
+        ':' @TypeBody ;
+        %%
+
+        %% REMOVED
+        %'='  @TypeBody  ';'
+        %{[
+        %    | pIdentifier:
+        %        .sIdentifier
+        %        '='  @TypeBody  ';'
+        %    | *:
+        %        >
+        %]};
 
 TypeBody :
         [
@@ -275,22 +403,46 @@ OptionallySignedIntegerConstant :
 VariableDeclarations :
         % Accept one or more variable declarations.
         pIdentifier  .sIdentifier
-        ':'  @TypeBody  ';'
+
+        %% ADDED
         {[
-            | pIdentifier:
-                .sIdentifier
-                ':'  @TypeBody  ';'
+            | ',':
+                pIdentifier .sVar .sIdentifier
             | *:
                 >
-        ]};
+        ]}
+        ':' @TypeBody ;
+        %%
+
+        %% REMOVED
+        %':'  @TypeBody  ';'
+        %{[
+        %    | pIdentifier:
+        %        .sIdentifier
+        %        ':'  @TypeBody  ';'
+        %    | *:
+        %        >
+        %]};
+        %%
 
 ProcedureHeading :
+        %% ADDED
+        '('
+        %%
+
         % Accept zero or more procedure formal parameter declarations.
-        [
-            | '(':
+        %% REMOVED
+        %[
+        %    | '(':
+        %%
                 {
                     % formal parameter identifier
                     [
+                        %% ADDED
+                        | ')':
+                            .sParmEnd
+                            >>
+                        %%
                         | 'var':
                             pIdentifier  .sIdentifier
                             .sVar
@@ -301,38 +453,54 @@ ProcedureHeading :
                     % type identifier
                     pIdentifier  .sIdentifier
                     [
-                        | ';':
-                        | *:
+                        %% REMOVED
+                        % | ';':
+                        % | *:
+                        %    >
+                        %%
+                        %% ADDED
+                        | ',':
+                        | ')':
                             >
+                        %%
                     ]
                 }
-                ')'
-            | *:
-        ]
-        ';'
+        %% REMOVED
+        %        ')'
+        %    | *:
+        %]
+        %';'
+        %%
         .sParmEnd;
 
-Statement :
-        [
-            | pIdentifier:
-                @AssignmentOrCallStmt
-            | 'begin':
-                @BeginStmt
-            | 'if':
-                @IfStmt
-            | 'while':
-                @WhileStmt
-            | 'case':
-                @CaseStmt
-            | 'repeat':
-                @RepeatStmt
-            | *:
-                .sNullStmt
-        ];
+%% REMOVED
+%Statement :
+%        [
+%            | pIdentifier:
+%                @AssignmentOrCallStmt
+%            | 'begin':
+%                @BeginStmt
+%            | 'if':
+%                @IfStmt
+%            | 'while':
+%                @WhileStmt
+%            | 'case':
+%                @CaseStmt
+%            | 'repeat':
+%                @RepeatStmt
+%            | *:
+%                .sNullStmt
+%        ];
+%%
 
 AssignmentOrCallStmt :
         [
-            | ':=':
+            %% REMOVED
+            %%| ':=':
+            %%
+            %% ADDED
+            | '=':
+            %%
                 .sAssignmentStmt
                 .sIdentifier    % identifier accepted in the Statement rule
                 @Expression
@@ -343,7 +511,12 @@ AssignmentOrCallStmt :
                 .sSubscript
                 @Expression
                 .sExpnEnd
-                ']'  ':='
+                %% REMOVED
+                %']'  ':='
+                %%
+                %% ADDED
+                ']'  '='
+                %%
                 @Expression
                 .sExpnEnd
             | *:
@@ -356,6 +529,14 @@ CallStmt :
         % accept zero or more actual parameters
         [
             | '(':
+                %% ADDED
+                [
+                    | ')':
+                        .sParmEnd
+                        >>
+                    | *:
+                ]
+                %%
                 {
                     @Expression
                     .sExpnEnd
@@ -375,42 +556,77 @@ CallStmt :
                     ]
                 }
                 ')'
-            | *:        % no actual parameters
+            %% REMOVED
+            %| *:        % no actual parameters
+            %%
         ]
         .sParmEnd;
 
-BeginStmt :
-        .sBegin
-        {
-            @Statement
-            [
-                | ';':
-                | 'end':
-                    .sEnd
-                    >
-            ]
-        };
+%% REMOVED
+%BeginStmt :
+%        .sBegin
+%        {
+%            @Statement
+%            [
+%                | ';':
+%                | 'end':
+%                    .sEnd
+%                    >
+%            ]
+%        };
+%%
 
 IfStmt :
         .sIfStmt
         @Expression
         .sExpnEnd
         'then'  .sThen
-        @Statement
+        
+        %% REMOVED
+        %@Statement
+        %%
+        %% ADDED
+        @Block
+        %%
         [
             | 'else':
                 .sElse
-                @Statement
+                %% REMOVED
+                %@Statement
+                %%
+                %% ADDED
+                @Block
+                %%
+            %% ADDED
+            | 'elsif':
+                .sElse
+                .sBegin
+                @IfStmt
+                .sEnd
+            %%
             | *:
-        ];
+        ] ;
 
 CaseStmt :
         .sCaseStmt
         @Expression
         .sExpnEnd
-        'of'
-        @CaseAlternative
+
+        %% REMOVED
+        %'of'
+        %%
+
         {[
+            %% ADDED
+            | 'when':
+                @CaseAlternative
+            | 'else':
+                .sLabelEnd
+                @Block
+                'end'
+                >
+            %%
+
             | ';':
                 % since case alternatives cannot be null, allow
                 % for the common situation of an extra semicolon
@@ -429,7 +645,6 @@ CaseStmt :
 CaseAlternative :
         % A case alternative is a statement labelled by
         % one or more optionally signed integer constants
-
         {
             @OptionallySignedIntegerConstant
             [
@@ -439,35 +654,80 @@ CaseAlternative :
             ]
         }
         .sLabelEnd
-        ':'  @Statement;
+        %% REMOVED
+        %':'  @Statement;
+        %%
+        %% ADDED
+        'then' @Block;
+        %%
+
+%% ADDED
+UnlessStmt :
+        .sIfStmt
+        @Expression
+        .sNot
+        .sExpnEnd
+        'then' .sThen
+        @Block
+        'end';
+%%
+
+%% ADDED
+DoStmt :
+        .sDoStmt
+        @Block
+        'break' 'if' .sBreakIf
+        @Expression
+        .sExpnEnd
+        @Block
+        'end' ;
+%%
 
 WhileStmt :
         .sWhileStmt
         @Expression
         .sExpnEnd
         'do'
-        @Statement;
+        %% REMOVED
+        %@Statement;
+        %%
+        %% ADDED
+        @Block
+        'end' ;
+        %%
 
-RepeatStmt :
-        .sRepeatStmt
-        {
-            @Statement
-            [
-                | ';':
-                | 'until':
-                    .sRepeatEnd
-                    >
-            ]
-        }
-        @Expression
-        .sExpnEnd;
+%% REMOVED
+%RepeatStmt :
+%        .sRepeatStmt
+%        {
+%            @Statement
+%            [
+%                | ';':
+%                | 'until':
+%                    .sRepeatEnd
+%                    >
+%            ]
+%        }
+%        @Expression
+%        .sExpnEnd;
+%%
 
 Expression :
         @SimpleExpression
         [
+            %% REMOVED
             | '=':
+            %%
+            %% ADDED
+            | '==':
+            %%
                 @SimpleExpression  .sEq
-            | '<>':
+            %% REMOVED
+            %| '<>':
+            %%
+            %% ADDED
+            | '!=':
+            %%
                 @SimpleExpression  .sNE
             | '<':
                 @SimpleExpression  .sLT
@@ -501,19 +761,62 @@ SimpleExpression :
         ]};
 
 Term :
-        @Factor
+        %% REMOVED
+        %@Factor
+        %%
+        %% ADDED
+        @Term2
+        %%
         {[
             | '*':
-                @Factor  .sMultiply
+                %% REMOVED
+                %@Factor  .sMultiply
+                %%
+                %% ADDED
+                @Term2  .sMultiply
+                %%
             | 'div':
-                @Factor  .sDivide
+                %% REMOVED
+                %@Factor  .sDivide
+                %%
+                %% ADDED
+                @Term2  .sDivide
+                %%
             | 'mod':
-                @Factor  .sModulus
+                %% REMOVED
+                %@Factor  .sModulus
+                %%
+                %% ADDED
+                @Term2  .sModulus
+                %%
             | 'and':
-                .sInfixAnd  @Factor  .sAnd
+                %% REMOVED
+                %.sInfixAnd  @Factor  .sAnd
+                %%
+                %% ADDED
+                .sInfixAnd  @Term2  .sAnd
+                %%
+            %% ADDED
+            | '?':
+                @Term2 .sIndex
+            %%
             | *:
                 >
         ]};
+
+%% ADDED
+Term2 :
+        @Factor
+        {[
+            | '$':
+                @Factor
+                '..'
+                @Factor
+                .sSubstring
+            | *:
+                >
+        ]};
+%%
 
 Factor :
         [
@@ -524,9 +827,19 @@ Factor :
                 .sInteger
             | '(':
                 @Expression  ')'
-            | 'not':
+            %% REMOVED
+            %| 'not':
+            %%
+            %% ADDED
+            | '!':
+            %%
                 @Factor
                 .sNot
+            %% ADDED
+            | '#':
+                @Factor 
+                .sLength
+            %%
             | pStringLiteral:
                 .sStringLiteral
             | 'file':

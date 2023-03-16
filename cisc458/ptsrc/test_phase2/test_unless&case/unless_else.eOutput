@@ -1,0 +1,73 @@
+.pIdentifier
+  % Output token text 'using'
+  .pIdentifier
+  % Output token text 'output'
+  .pIdentifier
+  % Output token text 'p'
+ .pSemicolon
+ .pNewLine
+  .pIdentifier (screened to pVar)
+  .pIdentifier
+  % Output token text 'a'
+ .pColon
+  .pIdentifier
+  % Output token text 'integer'
+ .pSemicolon
+ .pNewLine
+  .pIdentifier
+  % Output token text 'b'
+ .pColon
+  .pIdentifier
+  % Output token text 'integer'
+ .pSemicolon
+ .pNewLine
+  .pIdentifier
+  % Output token text 'begin'
+ .pNewLine
+  .pIdentifier
+  % Output token text 'a'
+ .pEquals
+  .pInteger
+  % Output token text '1'
+ .pNewLine
+  .pIdentifier
+  % Output token text 'b'
+ .pEquals
+  .pInteger
+  % Output token text '2'
+ .pNewLine
+  .pIdentifier
+  % Output token text 'unless'
+  .pIdentifier
+  % Output token text 'a'
+ .pGreater
+  .pIdentifier
+  % Output token text 'b'
+  .pIdentifier (screened to pThen)
+ .pNewLine
+  .pIdentifier
+  % Output token text 'a'
+ .pEquals
+  .pIdentifier
+  % Output token text 'a'
+ .pPlus
+  .pInteger
+  % Output token text '1'
+ .pNewLine
+  .pIdentifier (screened to pElse)
+ .pNewLine
+  .pIdentifier
+  % Output token text 'b'
+ .pEquals
+  .pIdentifier
+  % Output token text 'b'
+ .pPlus
+  .pInteger
+  % Output token text '1'
+ .pNewLine
+  .pIdentifier (screened to pEnd)
+ .pNewLine
+  .pIdentifier (screened to pEnd)
+ .pDot
+ .pNewLine
+ .pEndFile

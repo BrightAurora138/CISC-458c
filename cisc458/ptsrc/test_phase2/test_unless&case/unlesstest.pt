@@ -1,0 +1,11 @@
+using output p;
+var a: boolean;
+    b: integer;
+begin
+    a = true
+    b = 2
+    unless a  then
+    b = b + 1
+    a = !a
+    end
+end.

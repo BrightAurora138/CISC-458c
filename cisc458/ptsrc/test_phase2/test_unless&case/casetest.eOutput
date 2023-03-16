@@ -1,0 +1,78 @@
+ .sFieldWidth
+  % Output token text 'using'
+  .sFieldWidth
+  % Output token text 'output'
+  .sFieldWidth
+  % Output token text 'p'
+ .sGT
+ .sElse
+  .sFieldWidth (screened to sEnd)
+  .sFieldWidth
+  % Output token text 'a'
+ .sGE
+  .sFieldWidth
+  % Output token text 'integer'
+ .sGT
+ .sElse
+  .sFieldWidth
+  % Output token text 'b'
+ .sGE
+  .sFieldWidth
+  % Output token text 'integer'
+ .sGT
+ .sElse
+  .sFieldWidth
+  % Output token text 'begin'
+ .sElse
+  .sFieldWidth
+  % Output token text 'a'
+ .sAdd
+  .sIfStmt
+  % Output token text '1'
+ .sElse
+  .sFieldWidth
+  % Output token text 'b'
+ .sAdd
+  .sIfStmt
+  % Output token text '2'
+ .sElse
+  .sFieldWidth (screened to sFile)
+  .sFieldWidth
+  % Output token text 'a'
+ .sElse
+  .sFieldWidth
+  % Output token text 'when'
+  .sIfStmt
+  % Output token text '1'
+  .sFieldWidth (screened to sParmBegin)
+ .sElse
+  .sFieldWidth
+  % Output token text 'a'
+ .sAdd
+  .sFieldWidth
+  % Output token text 'a'
+ .sRepeatStmt
+  .sIfStmt
+  % Output token text '1'
+ .sElse
+  .sFieldWidth
+  % Output token text 'when'
+  .sIfStmt
+  % Output token text '2'
+  .sFieldWidth (screened to sParmBegin)
+ .sElse
+  .sFieldWidth
+  % Output token text 'b'
+ .sAdd
+  .sFieldWidth
+  % Output token text 'b'
+ .sRepeatStmt
+  .sIfStmt
+  % Output token text '1'
+ .sElse
+  .sFieldWidth (screened to sType)
+ .sElse
+  .sFieldWidth (screened to sType)
+ .sLT
+ .sElse
+ .sWhileStmt

@@ -23,18 +23,18 @@
         lRightBracket = 17;
         lLeftBrace = 18;
         lRightBrace = 19;
-        lPercent = 20;
-        lExclamation = 21;
-        lQuestion = 22;
-        lDollar = 23;
-        lHash = 24;
-        lBlank = 25;
-        lIllegal = 26;
-        lNewLine = 27;
-        lCarriageReturn = 28;
-        lTab = 29;
-        lNewPage = 30;
-        lEndFile = 31;
+        lBlank = 20;
+        lIllegal = 21;
+        lNewLine = 22;
+        lCarriageReturn = 23;
+        lTab = 24;
+        lNewPage = 25;
+        lEndFile = 26;
+        lPercent = 27;
+        lHash = 28;
+        lExclamation = 29;
+        lQuestion = 30;
+        lDollar = 31;
         lastCharClass = 31;
 
         { Output Tokens }
@@ -74,28 +74,29 @@
         pPlus = 29;
         pMinus = 30;
         pStar = 31;
-        pDoubleEquals = 32;
-        pDot = 33;
-        pComma = 34;
-        pSemicolon = 35;
-        pColon = 36;
-        pEquals = 37;
-        pNotEqual = 38;
-        pLess = 39;
-        pLessEqual = 40;
-        pGreaterEqual = 41;
-        pGreater = 42;
-        pLeftParen = 43;
-        pRightParen = 44;
-        pLeftBracket = 45;
-        pRightBracket = 46;
-        pPercent = 47;
-        pNot = 48;
-        pQuestion = 49;
-        pDollar = 50;
-        pHash = 51;
-        pDotDot = 52;
-        lastSyntaxToken = 52;
+        pDot = 32;
+        pComma = 33;
+        pSemicolon = 34;
+        pColon = 35;
+        pEquals = 36;
+        pNotEqual = 37;
+        pLess = 38;
+        pLessEqual = 39;
+        pGreaterEqual = 40;
+        pGreater = 41;
+        pLeftParen = 42;
+        pRightParen = 43;
+        pLeftBracket = 44;
+        pRightBracket = 45;
+        pDotDot = 46;
+        pLeftBrace = 47;
+        pRightBrace = 48;
+        pDoubleEquals = 49;
+        pNot = 50;
+        pQuestion = 51;
+        pDollar = 52;
+        pHash = 53;
+        lastSyntaxToken = 53;
 
         { Input/Output Tokens }
 
@@ -112,13 +113,13 @@
 
         { S/SL Rule Table Addresses } {
         Scan = 0;
-        Identifier = 232;
-        Integer = 249;
-        StringLiteral = 264;
-        Comment = 316;
+        Identifier = 248;
+        Integer = 265;
+        StringLiteral = 280;
+        Comment = 332;
         }
 
         { S/SL Table Parameters }
-        sslTblSize = 339;
+        sslTblSize = 353;
         minSslTableValue = -32767;
         maxSslTableValue = 32767;

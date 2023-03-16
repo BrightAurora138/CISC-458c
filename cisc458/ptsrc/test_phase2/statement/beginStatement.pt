@@ -1,0 +1,4 @@
+using output
+begin
+    x = 4
+end

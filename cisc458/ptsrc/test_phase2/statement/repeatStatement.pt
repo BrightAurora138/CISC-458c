@@ -1,0 +1,4 @@
+using output
+repeat
+    z = z + 1
+until z = 2

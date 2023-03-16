@@ -1,0 +1,4 @@
+using output
+mod Statement
+   x = 27
+end

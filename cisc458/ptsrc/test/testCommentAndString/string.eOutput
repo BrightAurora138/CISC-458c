@@ -1,0 +1,30 @@
+  .pIdentifier (screened to pProgram)
+  .pIdentifier
+  % Output token text 'p'
+ .pLeftParen
+  .pIdentifier
+  % Output token text 'output'
+ .pRightParen
+ .pSemicolon
+ .pNewLine
+  .pIdentifier (screened to pVar)
+  .pIdentifier
+  % Output token text 's'
+ .pColon
+  .pIdentifier
+  % Output token text 'string'
+ .pSemicolon
+ .pNewLine
+  .pIdentifier (screened to pBegin)
+ .pNewLine
+  .pIdentifier
+  % Output token text 's'
+ .pColonEquals
+  .pStringLiteral
+  % Output token text 'abc'
+ .pSemicolon
+ .pNewLine
+  .pIdentifier (screened to pEnd)
+ .pDot
+ .pNewLine
+ .pEndFile

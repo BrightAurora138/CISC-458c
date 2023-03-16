@@ -1,0 +1,24 @@
+beginStatement.pt
+The test is to check old PT statement 'begin' has been deleted and should no longer be recognised as a statement.
+
+repeatStatement.pt
+The test is to check old PT statement 'repeat' has been deleted and should no longer be recognised as a statement.
+
+whileStatement.pt
+The test is to check old PT statement 'repeat' has been deleted and should no longer be recognised as a statement.
+
+simpleDo.pt
+The test is to check new PT statement 'do' has been added and should be recognised as a statement.
+More complex tests will be found in testpharse2->do, where tests specific to 'do' are included.
+
+simpleUnless.pt
+The test is to check new PT statement 'unless' has been added and should be recognised as a statement.
+More complex tests will be found in testpharse2->unless, where tests specific to 'unless' are included.
+
+simpleIf.pt
+The test is to check Quby statement 'if' should be recognised as a statement.
+More complex tests will be found in testpharse2->if, where tests specific to 'if' are included.
+
+simpleCase.pt
+The test is to check Quby statement 'case' should be recognised as a statement.
+More complex tests will be found in testpharse2->unless, where tests specific to 'unless' are included.

@@ -1,0 +1,4 @@
+using output
+def P(var x:integer)
+    x = 1
+end

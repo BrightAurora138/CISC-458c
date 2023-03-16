@@ -1,0 +1,5 @@
+program p (output);
+var s_error2: string;
+begin
+	s_error2 := "abc;
+end.

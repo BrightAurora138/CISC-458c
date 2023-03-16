@@ -1,0 +1,2 @@
+using output;
+y = "Hi There" $ 1..2
