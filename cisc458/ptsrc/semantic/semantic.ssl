@@ -123,7 +123,7 @@ Output :
         tIfEnd
         tCaseBegin
         % tWhileBegin % Asg 3 removed tWhileBegin
-        tDoBegin % Asg 3 added tDoTest, replace tWhileBegin
+        tDoBegin % Asg 3 added tDoBegin, replace tWhileBegin
         tCaseElse % Asg 3 added tCaseElse
         tRepeatBegin
         tRepeatControl
@@ -157,7 +157,7 @@ Output :
         tCaseMerge
         tCaseEnd
         % tWhileTest % Asg 3 removed tWhileTest
-        tDoTest % Asg 3 added tDoTest, replace tWhileTestW
+        tDoTest % Asg 3 added tDoTest, replace tWhileTest
         % tWhileEnd % Asg 3 removed tWhileEnd
         tDoEnd % Asg 3 added tDoEnd, replace tWhileEnd
         tRepeatTest
@@ -298,7 +298,7 @@ mechanism SymbolTable :
         % Restore procedure parameter entries to the symbol table 
         % after popping the scope.
 
-    oSymbolTblLookupExternal >> Boolean;
+    oSymbolTblLookupExternal >> Boolean
         % Return true if any external names (program parameters)
         % have not yet been declared.
 
@@ -443,7 +443,7 @@ type TypeKind :
         tpBoolean
         tpSubrange
         tpArray
-        tpString        % special type for string literals
+        % tpString        % special type for string literals
         tpFile
         tpNull;
 
@@ -1626,25 +1626,36 @@ RepeatStmt :
         .tRepeatTest
         oFixPopTargetAddress;
 
-s :
+CaseStmt : % Asg 3 added CaseStmt
         .tCaseBegin
         @CaseSelectorExpression
-        oCasePushDisplay        % handle nested case statements
+        oCasePushDisplay                % handle nested case statements
         oCountPush (zero)       % count case alternative statements
         .tCaseSelect
         oFixPushForwardBranch
-        oEmitNullAddress        % address of case branch table
+        oEmitNullAddress                % address of case branch table
         {[
             | sCaseEnd:
+                .tCaseEnd
+                oFixPopForwardBranch
+                oEmitCaseBranchTable
                 >
-            | sElse:            % Asg 3 added sElse
-                .tCaseElse      % Asg 3 added .tCaseElse
+            | sElse:
+                .tCaseEnd
+                oFixPopForwardBranch
+                oEmitCaseBranchTable
+                .tCaseElse
+                @Statement
+                sCaseEnd                         % once else section is done expect end statement
+                .tCaseMerge
+                oFixPushForwardBranch
+                oEmitNullAddress                % merge branch at end of statement
+                oFixSwap                        % keep case select branch on top
+                oCountIncrement
+                > 
             | *:
                 @CaseAlternative
         ]}
-        .tCaseEnd
-        oFixPopForwardBranch
-        oEmitCaseBranchTable
         % emit merge branches for case alternatives
         {[ oCountChoose         % number of case alternatives
             | zero:
@@ -1849,12 +1860,15 @@ BinaryOperator :
         % but that would probably be less efficient on average.
         [
             | sAdd: % Asg 3 added .tConcatenate
-                | tpString: %String behaves differently than all other types that "add" supports
-                    .tConcatenate
-                    oTypeStkPush(tpString)
-                | *: %For all other variables, retain old behaviour
-                    .tAdd
-                    oTypeStkPush(tpInteger) % result type
+                [oTypeStkChooseKind
+                    | tpString: %String behaves differently than all other types that "add" supports
+                        .tConcatenate
+                        oTypeStkPush(tpString)
+                    | *: %For all other variables, retain old behaviour
+                        .tAdd
+                        oTypeStkPush(tpInteger) % result type
+                ]
+                @CompareOperandAndResultTypes
             | sSubtract:
                 .tSubtract
                 oTypeStkPush(tpInteger)
@@ -1942,13 +1956,13 @@ CompareAndSwapTypes :
                     | *:
                         #eTypeMismatch
                 ]
-            | tpString:
-                oTypeStkSwap
-                [ oTypeStkChooseKind
-                    | tpString:
-                    | *:
-                        #eTypeMismatch
-                ]
+            %| tpString: % Asg 3 removed duplicate
+            %    oTypeStkSwap
+            %    [ oTypeStkChooseKind
+            %        | tpString:
+            %        | *:
+            %            #eTypeMismatch
+            %    ]
             | tpFile:
                 oTypeStkSwap
                 [ oTypeStkChooseKind
@@ -2115,9 +2129,9 @@ ConstantOperand :
             | tpInteger, tpSubrange:
                 .tLiteralInteger
                 oEmitValue
-            | tpString: % Asg 3 tpChar -> tpString
-                .tLiteralChar % Asg 3 removed tLiteralChar
-                oEmitValue
+            %| tpString: % Asg 3 removed duplicate
+            %    .tLiteralChar % Asg 3 removed tLiteralChar
+            %    oEmitValue
             | tpBoolean:
                 .tLiteralBoolean
                 oEmitValue
@@ -2550,9 +2564,9 @@ WriteText :
         ]
         .tParmEnd
         [ oTypeStkChooseKind
-            | tpString: % Asg 3 tpChar -> tpString
-                .tTrap
-                oEmitTrapKind(trWriteString) % Asg 3 trWriteChar -> trWriteString
+            %| tpString: % Asg 3 tpChar -> tpString % Asg 3 removed duplicate
+            %    .tTrap
+            %    oEmitTrapKind(trWriteString) % Asg 3 trWriteChar -> trWriteString
             | tpInteger, tpSubrange:
                 .tTrap
                 oEmitTrapKind(trWriteInteger)

@@ -1,0 +1,2 @@
+qubyBasicStringAssign.pt
+Test case to ensure a basic string variable can be assigned a string literal in Quby and that the appropriate t-codes are produced by the semantic phase.
