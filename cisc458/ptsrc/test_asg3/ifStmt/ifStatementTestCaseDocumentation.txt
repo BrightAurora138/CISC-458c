@@ -1,0 +1,15 @@
+qubyIfStmt.pt
+Quby test case to ensure the modified Quby semantic phase can successfully output t-code for a simple if-statement without an elif or else block.
+The input test code is in the form of:
+if expression :
+  statement
+end
+
+qubyIfElseStmt.pt
+Test case to ensure the traditional simple if-else block is still valid using the Quby semantic phase (note the omission of an elif block).
+The input test code is in the form of:
+if expression :
+  statement
+else:
+  statement
+end
