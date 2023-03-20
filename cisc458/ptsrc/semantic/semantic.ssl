@@ -70,6 +70,7 @@ Input :
         sNot
         sNewLine
         sEndOfFile
+        %%%%%%%%% Added
         sPublic
         sModule
         sDoStmt
@@ -77,6 +78,7 @@ Input :
         sSubstring
         sLength
         sIndex
+        %%%%%%%%%
         lastSemanticToken = sIndex;
 
 Output :        
@@ -275,7 +277,7 @@ type PredeclaredId :
 
 type StdType :
         stdInteger
-        stdString % Asg 3 pidChar -> pidString
+        stdString % Asg 3 stdChar -> stdString
         stdBoolean
         stdText;
 
@@ -859,11 +861,11 @@ ConstantDefinitions :
             oSymbolStkSetKind(syConstant)
             @ConstantValue
             %     oSymbolStkEnterTypeReference
-            %     oTypeStkPop
+            oTypeStkPop
             %     oSymbolStkEnterValue
-            %     oValuePop
+            oValuePop
             %     oSymbolTblEnter
-            %     oSymbolStkPop
+            oSymbolStkPop
             % | *:
             %     >
         % ]}
@@ -908,11 +910,30 @@ ConstantValue :         % push the value and type of the constant value
                     | *:
                 ]
                 oSymbolStkPop   
+            % | sStringLiteral:
+            %     @StringLiteral  % pushes type and value, enters address
             | sStringLiteral:
-                @StringLiteral  % pushes type and value, enters address
+                .tAssignBegin
+                .tLiteralAddress
+                oTypeStkLinkToStandardType(stdString)
+                oTypeStkPushSymbol
+                oAllocateAlignOnWord
+                oSymbolStkEnterDataAddress
+                oEmitDataAddress
+                oAllocateVariable
+                oTypeStkPop
+                .tLiteralString
+                oValuePushStringLength
+                oEmitValue
+                oValuePop
+                oEmitString
+		        oSymbolStkSetKind(syVariable)
+                oTypeStkLinkToStandardType(stdString)
+                .tAssignString
         ];
 
 TypeDefinitions :       % process named type definitions
+        % edit
         % {[
             sIdentifier
             oSymbolStkPushLocalIdentifier
@@ -1262,58 +1283,27 @@ AllocateVar :
         ];
 
 ProcedureDefinition :
-        [
+        sIdentifier  oSymbolStkPushLocalIdentifier      % procedure name
+        [ oSymbolStkChooseKind
+            | syUndefined:
+            | syExternal:
+                % Program parameters must be declared as file variables
+                #eExternalDeclare
+            | *:
+                #eMultiplyDefined
+                % New definition obscures old one.
+        ]
+        % Procedure bodies only execute when the routine is called
+        % so we need to branch around the procedure's code
+        .tSkipProc              % branch around procedure definition
+        oFixPushForwardBranch
+        oEmitNullAddress
+        [                              % Added Public Procedure
             | sPublic:
-                sIdentifier  oSymbolStkPushLocalIdentifier      % procedure name
-                [ oSymbolStkChooseKind
-                    | syUndefined:
-                    | syExternal:
-                        % Program parameters must be declared as file variables
-                        #eExternalDeclare
-                    | *:
-                        #eMultiplyDefined
-                        % New definition obscures old one.
-                ]
-                % Procedure bodies only execute when the routine is called
-                % so we need to branch around the procedure's code
-                .tSkipProc              % branch around procedure definition
-                oFixPushForwardBranch
-                oEmitNullAddress
                 oSymbolStkSetKind(syPublicProcedure)
             | *:
-                sIdentifier  oSymbolStkPushLocalIdentifier      % procedure name
-                [ oSymbolStkChooseKind
-                    | syUndefined:
-                    | syExternal:
-                        % Program parameters must be declared as file variables
-                        #eExternalDeclare
-                    | *:
-                        #eMultiplyDefined
-                        % New definition obscures old one.
-                ]
-                % Procedure bodies only execute when the routine is called
-                % so we need to branch around the procedure's code
-                .tSkipProc              % branch around procedure definition
-                oFixPushForwardBranch
-                oEmitNullAddress
                 oSymbolStkSetKind(syProcedure)
         ]
-        % sIdentifier  oSymbolStkPushLocalIdentifier      % procedure name
-        % [ oSymbolStkChooseKind
-        %     | syUndefined:
-        %     | syExternal:
-        %         % Program parameters must be declared as file variables
-        %         #eExternalDeclare
-        %     | *:
-        %         #eMultiplyDefined
-        %         % New definition obscures old one.
-        % ]
-        % % Procedure bodies only execute when the routine is called
-        % % so we need to branch around the procedure's code
-        % .tSkipProc              % branch around procedure definition
-        % oFixPushForwardBranch
-        % oEmitNullAddress
-
         % oSymbolStkSetKind(syProcedure)
         oValuePushCodeAddress
         oSymbolStkEnterValue
@@ -1742,19 +1732,19 @@ CaseStmt : % Asg 3 added CaseStmt
         oFixPushForwardBranch
         oEmitNullAddress                % address of case branch table
         {[
-            | sCaseEnd:
+            | sCaseEnd:                 % Place the original output at line 1596-1598 under sCaseEnd
                 .tCaseEnd
                 oFixPopForwardBranch
                 oEmitCaseBranchTable
                 >
-            | sElse:
+            | sElse:                    % Add sElse so we can handle Quby else clauses
                 .tCaseEnd
                 oFixPopForwardBranch
                 oEmitCaseBranchTable
                 .tCaseElse
                 @Statement
-                sCaseEnd                         % once else section is done expect end statement
-                .tCaseMerge
+                sCaseEnd                        % Finshing the else clause
+                .tCaseMerge                     % merge all clauses
                 oFixPushForwardBranch
                 oEmitNullAddress                % merge branch at end of statement
                 oFixSwap                        % keep case select branch on top
@@ -1843,6 +1833,7 @@ Expression :
             @Operand
             @UnaryOperator
             @BinaryOperator
+            @TernaryOperator  % Add for a3
             [
                 | sExpnEnd:
                     >
@@ -1884,13 +1875,18 @@ Operand :
                 .tLiteralInteger
                 oEmitValue
                 oValuePop
+            % Modified for A3
             | sStringLiteral:
+                oValuePushStringLength
                 oSymbolStkPush(syExpression)
+                oTypeStkPush(tpInteger)
                 @StringLiteral  % pushes type and value
                 [ oTypeStkChooseKind
-                    | tpString: % Asg 3 tpChar -> tpString	
+                    | tpString: % Asg 3 tpChar -> tpString
                         % .tLiteralChar % Asg 3 removed tLiteralChar
+                        .tLiteralString
                         oEmitValue
+                        oEmitString
                     | *:
                         % .tLiteralChar % Asg 3 removed tLiteralChar
                         oEmitValue
@@ -1955,6 +1951,15 @@ UnaryOperator :
                 oTypeStkPush(tpBoolean) % result type
                 @CompareAndSwapTypes
                 oTypeStkPop
+            | sLength:
+                .tLength
+                [ oTypeStkChooseKind
+                    | tpString:
+                       oTypeStkSetKind(tpInteger)
+                    | *:
+                       #eTypeMismatch
+                ]
+                oTypeStkPush(tpInteger)
             | *:
                 >>
         ]
@@ -2022,11 +2027,47 @@ BinaryOperator :
                 .tModulus
                 oTypeStkPush(tpInteger)
                 @CompareOperandAndResultTypes
+            %%% Add for a3
+            | sIndex:
+                .tIndex
+                oTypeStkPush(tpString)
+                @CompareOperandAndResultTypes
+                oTypeStkPop
+                oTypeStkPush(tpInteger)
             | *:
                 >>
         ]
         % If an operator is present the result is an expression
         oSymbolStkSetKind(syExpression);
+
+% Add for assignment 3
+TernaryOperator :
+        [
+            | sSubstring:
+                [ oTypeStkChooseKind
+                    | tpInteger:
+                    | *:
+                        #eTypeMismatch
+                ]
+                oTypeStkPop
+                oSymbolStkPop
+                [ oTypeStkChooseKind
+                    | tpInteger:
+                    | *:
+                        #eTypeMismatch
+                ]
+                oTypeStkPop
+                oSymbolStkPop
+                [ oTypeStkChooseKind
+                    | tpString:
+                    | *:
+                        #eTypeMismatch
+                ]
+                oTypeStkPop
+                oTypeStkPush(tpString)
+                .tSubstring
+            | *:
+        ];
 
 CompareAndSwapTypes :
         % Compare the top two type stack entries for assignment

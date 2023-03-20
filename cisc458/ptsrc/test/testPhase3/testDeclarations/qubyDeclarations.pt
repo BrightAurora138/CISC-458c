@@ -1,2 +1,4 @@
 using output
-var e,f : 1..10
+var d : array[1..2] of string
+var e,k : 1..10
+var g : array[1..10] of integer
