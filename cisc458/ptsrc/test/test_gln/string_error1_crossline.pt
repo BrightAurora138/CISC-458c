@@ -1,6 +1,0 @@
-program p (output);
-var s_error1: string;
-begin
-	string := "abc
-	def";
-end.

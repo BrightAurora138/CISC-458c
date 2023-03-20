@@ -1,6 +1,0 @@
-program p (output);
-var s_empty: string;
-begin
-	s_empty := "";
-	%this is a test fof empty string
-end.

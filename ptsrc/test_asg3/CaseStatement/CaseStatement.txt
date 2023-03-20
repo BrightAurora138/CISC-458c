@@ -1,0 +1,8 @@
+NoElse.pt
+The test is to check if the CaseStmt rule can handle the case where there is no else clause
+
+OneElse.pt
+The test is to check if the CaseStmt rule can handle the case where there is one else clause
+
+MultiWhen.pt
+The test is to check if the CaseStmt rule can handle the case where there is one else clause, but also more than one when..then clauses

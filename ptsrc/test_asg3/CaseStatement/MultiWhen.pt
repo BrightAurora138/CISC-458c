@@ -1,0 +1,12 @@
+using output
+var i:integer
+var x:integer
+
+case i:
+   when 10 then:
+      x = 1
+   when 11 then:
+      x = 0
+   else:
+      x = 2
+end

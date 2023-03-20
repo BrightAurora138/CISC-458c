@@ -1,0 +1,3 @@
+NoElse.pt
+The test is to check if the CaseStmt rule can handle the case where there is no else clause
+

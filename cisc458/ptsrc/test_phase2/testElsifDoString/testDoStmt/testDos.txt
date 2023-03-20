@@ -1,8 +1,0 @@
-testDo.pt
-This file tests whether quby can handle do loop and the token sDo is emitted.
-
-testMultiStmtAfterDo.pt
-This file tests whether quby can handle mutiple statement after "break if".
-
-testMultiStmtBeforeDo.pt
-This file tests whether quby can handle mutiple statement before "break if".

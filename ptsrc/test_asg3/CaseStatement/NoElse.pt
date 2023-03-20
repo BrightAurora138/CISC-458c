@@ -1,0 +1,8 @@
+using output
+var i:integer
+var x:integer
+
+case i:
+   when 42 then:
+      x = 1
+end

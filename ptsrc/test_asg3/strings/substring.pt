@@ -1,0 +1,3 @@
+using output
+var x : string
+x = "This Assignment is Hard" {2:4}

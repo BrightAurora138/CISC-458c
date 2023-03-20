@@ -1,6 +1,0 @@
-using output;
-do
-    x = 1
-    break if true
-    x = 1
-end

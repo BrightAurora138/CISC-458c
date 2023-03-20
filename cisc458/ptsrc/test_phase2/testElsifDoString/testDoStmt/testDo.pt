@@ -1,6 +1,0 @@
-using output;
-do
-    y = 2
-    break if true
-    y = 2
-end

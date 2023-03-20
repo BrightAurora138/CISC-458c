@@ -1,4 +1,0 @@
-using output
-mod Declarations
-    var v : string;
-end

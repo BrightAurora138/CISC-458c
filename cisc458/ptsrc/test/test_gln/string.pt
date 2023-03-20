@@ -1,5 +1,0 @@
-program p (output);
-var s: string;
-begin
-	s := "abc";
-end.
