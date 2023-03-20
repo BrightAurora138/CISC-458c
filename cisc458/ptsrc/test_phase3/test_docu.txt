@@ -1,0 +1,15 @@
+dotest.pt
+This example is used to test that the do loop for Quby.
+An integer is used to test the loop.
+
+constest.pt
+This example is used to test Quby's constant declaration.
+An integer is defined and then assgined a constant value.
+
+stringtest.pt
+This example is used to test Quby's string type.
+A string is defined in this code.
+
+typetest.pt
+This example is used to test Quby's type declaration.
+A simple type is defined here.

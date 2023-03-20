@@ -163,27 +163,32 @@ program SemanticAnalysis (output, semanticSsl, parseStream, temp, tCode, options
         sThen = 26;
         sElse = 27;
         sWhileStmt = 28;
-        sRepeatStmt = 29;
-        sRepeatEnd = 30;
-        sEq = 31;
-        sNE = 32;
-        sLT = 33;
-        sLE = 34;
-        sGT = 35;
-        sGE = 36;
-        sAdd = 37;
-        sSubtract = 38;
-        sMultiply = 39;
-        sDivide = 40;
-        sModulus = 41;
-        sInfixOr = 42;
-        sOr = 43;
-        sInfixAnd = 44;
-        sAnd = 45;
-        sNot = 46;
-        sNewLine = 47;
-        sEndOfFile = 48;
-        lastSemanticToken = 48;
+        sEq = 29;
+        sNE = 30;
+        sLT = 31;
+        sLE = 32;
+        sGT = 33;
+        sGE = 34;
+        sAdd = 35;
+        sSubtract = 36;
+        sMultiply = 37;
+        sDivide = 38;
+        sModulus = 39;
+        sInfixOr = 40;
+        sOr = 41;
+        sInfixAnd = 42;
+        sAnd = 43;
+        sNot = 44;
+        sNewLine = 45;
+        sEndOfFile = 46;
+        sPublic = 47;
+        sModule = 48;
+        sDoStmt = 49;
+        sBreakIf = 50;
+        sSubstring = 51;
+        sLength = 52;
+        sIndex = 53;
+        lastSemanticToken = 53;
 
         { Output Tokens }
         tMultiply = 0;
@@ -234,8 +239,8 @@ program SemanticAnalysis (output, semanticSsl, parseStream, temp, tCode, options
         tIfEnd = 44;
         tCaseBegin = 45;
         tWhileBegin = 46;
-        tRepeatBegin = 47;
-        tRepeatControl = 48;
+        tDoBegin = 47;
+        tDoBreakIf = 48;
         tCallBegin = 49;
         tParmEnd = 50;
         tProcedureEnd = 51;
@@ -259,14 +264,15 @@ program SemanticAnalysis (output, semanticSsl, parseStream, temp, tCode, options
         tCaseEnd = 68;
         tWhileTest = 69;
         tWhileEnd = 70;
-        tRepeatTest = 71;
-        tSkipProc = 72;
-        tCallEnd = 73;
-        tLineNumber = 74;
-        tTrap = 75;
-        lastCompoundTcode = 75;
-        tEndOfFile = 76;
-        lastTcode = 76;
+        tDoEnd = 71;
+        tDoTest = 72;
+        tSkipProc = 73;
+        tCallEnd = 74;
+        tLineNumber = 75;
+        tTrap = 76;
+        lastCompoundTcode = 76;
+        tEndOfFile = 77;
+        lastTcode = 77;
 
         { Input/Output Tokens }
 
@@ -437,7 +443,7 @@ program SemanticAnalysis (output, semanticSsl, parseStream, temp, tCode, options
         IfStmt = 1376;
         WhileStmt = 1407;
         CaseStmt = 1448;
-        RepeatStmt = 1424;
+        DoStmt = 1424;
         Variable = 2187;
         Expression = 1598;
         CompareAndSwapTypes = 1961;

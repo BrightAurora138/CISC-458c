@@ -15,7 +15,6 @@
 %      "t-code", corresponding semantically to the source program.
 
 Input :
-        % Semantic tokens - must match output tokens in parser.ssl exactly!
         sIdentifier 
         firstSemanticToken = sIdentifier
         firstCompoundSemanticToken = sIdentifier
@@ -49,8 +48,10 @@ Input :
         sThen
         sElse
         sWhileStmt
-        sRepeatStmt
-        sRepeatEnd
+        %% REMOVED
+        %sRepeatStmt
+        %sRepeatEnd
+        %%
         sEq
         sNE
         sLT
@@ -69,7 +70,16 @@ Input :
         sNot
         sNewLine
         sEndOfFile
-        lastSemanticToken = sEndOfFile;
+        %% ADDED
+        sPublic
+        sModule
+        sDoStmt
+        sBreakIf
+        sSubstring
+        sLength
+        sIndex
+        %%
+        lastSemanticToken = sIndex;
 
 Output :        
         % T-code tokens - must match input tokens in coder.ssl exactly!
@@ -123,8 +133,8 @@ Output :
         tIfEnd
         tCaseBegin
         tWhileBegin
-        tRepeatBegin
-        tRepeatControl
+        tDoBegin
+        tDoBreakIf
         tCallBegin
         tParmEnd
         tProcedureEnd
@@ -150,7 +160,8 @@ Output :
         tCaseEnd
         tWhileTest
         tWhileEnd
-        tRepeatTest
+        tDoEnd
+        tDoTest
         tSkipProc
         tCallEnd
         tLineNumber
@@ -211,7 +222,8 @@ type Integer :
 
         % These two sizes are machine dependent
         byteSize = 1
-        wordSize = 4;
+        wordSize = 4
+        stringSize = 1024;
 
 type Boolean :
         no
@@ -256,7 +268,7 @@ type PredeclaredId :
 
 type StdType :
         stdInteger
-        stdChar
+        stdString
         stdBoolean
         stdText;
 
@@ -796,29 +808,20 @@ Block :
         @BeginStmt;
 
 ConstantDefinitions :           % Process named constant definitions
-        {[
-            | sIdentifier:
-                oSymbolStkPushLocalIdentifier
-                [ oSymbolStkChooseKind
-                    | syUndefined:
-                    | syExternal:
-                        % A program parameter must be declared as a file variable
-                        #eExternalDeclare
-                    | *:
-                        #eMultiplyDefined
-                        % The new definition will now obscure the old one
-                ]
-                oSymbolStkSetKind(syConstant)
-                @ConstantValue
-                oSymbolStkEnterTypeReference
-                oTypeStkPop
-                oSymbolStkEnterValue
-                oValuePop
-                oSymbolTblEnter
-                oSymbolStkPop
+        sIdentifier
+        oSymbolStkPushLocalIdentifier
+        [ oSymbolStkChooseKind
+            | syUndefined:
+            | syExternal:
+                % A program parameter must be declared as a file variable
+                #eExternalDeclare
             | *:
-                >
-        ]};
+                #eMultiplyDefined
+                % The new definition will now obscure the old one
+        ]
+        oSymbolStkSetKind(syConstant)
+        @ConstantValue
+        ;
 
 ConstantValue :         % push the value and type of the constant value
         [
@@ -864,9 +867,10 @@ ConstantValue :         % push the value and type of the constant value
         ];
 
 TypeDefinitions :       % process named type definitions
-        {[
-            | sIdentifier:
+        
+            sIdentifier
                 oSymbolStkPushLocalIdentifier
+                @TypeBody
                 [ oSymbolStkChooseKind
                     | syUndefined:
                     | syExternal:
@@ -886,9 +890,7 @@ TypeDefinitions :       % process named type definitions
                 oTypeStkPop
                 oSymbolTblEnter
                 oSymbolStkPop
-            | *:
-                >
-        ]};
+        ;
 
 TypeBody :
         % Accept a type specification and push a Type Stack entry for it.
@@ -1346,8 +1348,8 @@ Statement :
                 @WhileStmt
             | sCaseStmt:
                 @CaseStmt
-            | sRepeatStmt:
-                @RepeatStmt
+            | sDoStmt:
+                @DoStmt
             | sNullStmt:
         ];
 
@@ -1565,19 +1567,35 @@ WhileStmt :
         oFixPopTargetAddress
         oFixPopForwardBranch;
 
-RepeatStmt :
-        .tRepeatBegin
-        oFixPushTargetAddress           % top-of-loop branch target
-        {[
-            | sRepeatEnd:
-                >
-            | *:
-                @Statement
-        ]}
-        .tRepeatControl
-        @BooleanControlExpression
-        .tRepeatTest
-        oFixPopTargetAddress;
+DoStmt :
+	.tDoBegin
+	oFixPushTargetAddress		% top-of-loop branch target
+	@Statement
+	sBreakIf .tDoBreakIf
+	@BooleanControlExpression
+	.tDoTest
+	oFixPushForwardBranch
+	oEmitNullAddress		% exit branch
+	oFixSwap			% top-of-loop target back on top
+	@Statement
+	.tDoEnd
+	oFixPopTargetAddress
+	oFixPopForwardBranch;
+
+
+%RepeatStmt :
+        %.tRepeatBegin
+        %oFixPushTargetAddress           % top-of-loop branch target
+        %{[
+            %| sRepeatEnd:
+                %>
+            %| *:
+                %@Statement
+        %]}
+        %.tRepeatControl
+        %@BooleanControlExpression
+        %.tRepeatTest
+        %oFixPopTargetAddress;
 
 CaseStmt :
         .tCaseBegin
@@ -1746,12 +1764,12 @@ StringLiteral :
             | zero:
                 #eNullString
                 oTypeStkPush(tpChar)
-                oTypeStkLinkToStandardType(stdChar)
+                oTypeStkLinkToStandardType(stdString)
                 oValuePop
                 oValuePush(zero)
             | one:
                 oTypeStkPush(tpChar)
-                oTypeStkLinkToStandardType(stdChar)
+                oTypeStkLinkToStandardType(stdString)
                 oValuePop
                 oValuePushChar
             | *:
@@ -2976,7 +2994,7 @@ SymbolStkPushDefaultCharConstant :
         oSymbolStkEnterValue
         oValuePop
         oTypeStkPush(tpChar)
-        oTypeStkLinkToStandardType(stdChar)
+        oTypeStkLinkToStandardType(stdString)
         oSymbolStkEnterTypeReference
         oTypeStkPop;
 

@@ -1,0 +1,4 @@
+using output;
+var a: string;
+    val a = ""
+    a = "abc"

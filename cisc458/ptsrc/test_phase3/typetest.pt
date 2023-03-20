@@ -1,0 +1,6 @@
+var a: integer
+type a: integer
+begin
+    a = 2
+end.
+    
