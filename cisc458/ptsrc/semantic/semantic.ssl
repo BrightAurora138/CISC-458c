@@ -131,7 +131,8 @@ Output :
         tIfEnd
         tCaseBegin
         % tWhileBegin % Asg 3 removed tWhileBegin	
-        tDoBegin % Asg 3 added tDoBegin, replace tWhileBegin	
+        tDoBegin % Asg 3 added tDoBegin, replace tWhileBegin
+        tDoBreakIf	
         tCaseElse % Asg 3 added tCaseElse
         tRepeatBegin
         tRepeatControl
@@ -827,6 +828,8 @@ Block :
                 @IfStmt
             | sWhileStmt:
                 @WhileStmt
+            | sDoStmt:
+                @DoStmt
             | sCaseStmt:
                 @CaseStmt
             % | sRepeatStmt:
@@ -834,35 +837,37 @@ Block :
             | sNullStmt:        % Merge the statement rule
             | *:
                 >
-        ]};
+        ]}
         % sBegin
         % @BeginStmt;
+        sEnd;
 
 ConstantDefinitions :
     % Process named constant definitions
-        {[
-            | sIdentifier:
-                oSymbolStkPushLocalIdentifier
-                [ oSymbolStkChooseKind
-                    | syUndefined:
-                    | syExternal:
-                        % A program parameter must be declared as a file variable
-                        #eExternalDeclare
-                    | *:
-                        #eMultiplyDefined
-                        % The new definition will now obscure the old one
-                ]
-                oSymbolStkSetKind(syConstant)
-                @ConstantValue
-                oSymbolStkEnterTypeReference
-                oTypeStkPop
-                oSymbolStkEnterValue
-                oValuePop
-                oSymbolTblEnter
-                oSymbolStkPop
-            | *:
-                >
-        ]};
+        % {[
+            sIdentifier
+            oSymbolStkPushLocalIdentifier
+            [ oSymbolStkChooseKind
+                | syUndefined:
+                | syExternal:
+                    % A program parameter must be declared as a file variable
+                    #eExternalDeclare
+                | *:
+                    #eMultiplyDefined
+                    % The new definition will now obscure the old one
+            ]
+            oSymbolStkSetKind(syConstant)
+            @ConstantValue
+            %     oSymbolStkEnterTypeReference
+            %     oTypeStkPop
+            %     oSymbolStkEnterValue
+            %     oValuePop
+            %     oSymbolTblEnter
+            %     oSymbolStkPop
+            % | *:
+            %     >
+        % ]}
+        ;
 
 ConstantValue :         % push the value and type of the constant value
         [
@@ -908,31 +913,32 @@ ConstantValue :         % push the value and type of the constant value
         ];
 
 TypeDefinitions :       % process named type definitions
-        {[
-            | sIdentifier:
-                oSymbolStkPushLocalIdentifier
-                [ oSymbolStkChooseKind
-                    | syUndefined:
-                    | syExternal:
-                        % Program parameters must be declared as file variables
-                        #eExternalDeclare        % ignore this declaration
-                    | *:
-                        #eMultiplyDefined
-                        % The new definition will obscure the old one
-                ]
-                oSymbolStkSetKind(syType)
+        % {[
+            sIdentifier
+            oSymbolStkPushLocalIdentifier
+            [ oSymbolStkChooseKind
+                | syUndefined:
+                | syExternal:
+                    % Program parameters must be declared as file variables
+                    #eExternalDeclare        % ignore this declaration
+                | *:
+                    #eMultiplyDefined
+                    % The new definition will obscure the old one
+            ]
+            oSymbolStkSetKind(syType)
 
-                % Accepts a type specification and pushes its type to the Type Stack.
-                % Creates type table entries for the type and any new subtypes as necessary.
-                @TypeBody
+            % Accepts a type specification and pushes its type to the Type Stack.
+            % Creates type table entries for the type and any new subtypes as necessary.
+            @TypeBody
 
-                oSymbolStkEnterTypeReference
-                oTypeStkPop
-                oSymbolTblEnter
-                oSymbolStkPop
-            | *:
-                >
-        ]};
+            oSymbolStkEnterTypeReference
+            oTypeStkPop
+            oSymbolTblEnter
+            oSymbolStkPop
+            % | *:
+            %     >
+        % ]}
+        ;
 
 TypeBody :
         % Accept a type specification and push a Type Stack entry for it.
@@ -1194,7 +1200,7 @@ EnterVariableAttributes :
                 oSymbolTblEnter
         ]
         oSymbolStkPop
-        oTypeStkSwap
+        % oTypeStkSwap
         ]};
  
 AllocateVar :
@@ -1525,13 +1531,13 @@ EmitStore:
             | *:                
         ];
 
-BeginStmt :
-        {[
-            | sEnd:
-                >
-            | *:
-                @Statement
-        ]};
+% BeginStmt :
+%         {[
+%             | sEnd:
+%                 >
+%             | *:
+%                 @Statement
+%         ]};
 
 CallStmt :
         sIdentifier  oSymbolStkPushIdentifier   % Procedure being called
@@ -1541,7 +1547,7 @@ CallStmt :
             | *:
         ]
         [ oSymbolStkChooseKind
-            | syProcedure:
+            | syProcedure, syPublicProcedure:
                 [ oSymbolStkChooseStandardRoutine
                     | rtReset:
                         .tTrapBegin
@@ -1695,6 +1701,21 @@ WhileStmt :
         oFixSwap                % top-of-loop target back on top
         @Statement
         .tDoEnd                         % Asg 3 .tWhileEnd -> .tDoEnd
+        oFixPopTargetAddress
+        oFixPopForwardBranch;
+
+DoStmt :
+        .tDoBegin
+        oFixPushTargetAddress		% top-of-loop branch target
+        @Statement
+        sBreakIf .tDoBreakIf
+        @BooleanControlExpression
+        .tDoTest
+        oFixPushForwardBranch
+        oEmitNullAddress		% exit branch
+        oFixSwap			% top-of-loop target back on top
+        @Statement
+        .tDoEnd
         oFixPopTargetAddress
         oFixPopForwardBranch;
 
