@@ -1,3 +1,2 @@
 using output;
-var a: integer
 val a = 2

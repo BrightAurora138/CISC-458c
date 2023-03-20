@@ -7,3 +7,7 @@
    oEmitDataAddress
    % value emitted 0
    .tStoreInteger
+ .tTrapBegin
+ .tTrap
+ oEmitTrapKind(trHalt)
+ % value emitted 0

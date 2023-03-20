@@ -1,4 +1,2 @@
 using output;
-var a: string;
-    val a = ""
-    a = "abc"
+val str = "hello"
