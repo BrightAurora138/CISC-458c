@@ -1,0 +1,26 @@
+   .tFileDescriptor
+   .tLiteralInteger
+   oEmitValue
+   % value emitted 2
+   .tFileBind
+   .tLiteralAddress
+   oEmitDataAddress
+   % value emitted 0
+   .tStoreInteger
+     .tAssignBegin
+      #eUndefinedIdentifier
+       .tLiteralInteger
+       oEmitValue
+       % value emitted 0
+      .tAssignInteger
+     .tDoBegin
+         .tAssignBegin
+          #eUndefinedIdentifier
+           #eUndefinedIdentifier
+           #eExpnOperandReqd
+           .tLiteralInteger
+           oEmitValue
+           % value emitted 1
+           .tAdd
+          .tAssignInteger
+     .tDoBreakIf

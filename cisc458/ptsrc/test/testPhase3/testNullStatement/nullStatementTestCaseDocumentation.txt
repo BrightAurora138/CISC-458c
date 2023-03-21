@@ -1,0 +1,2 @@
+qubyNullStatement.pt
+Examine a test scenario to evaluate the no statement condition.

@@ -1,0 +1,3 @@
+using output
+var k : integer
+k = 2

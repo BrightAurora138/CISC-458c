@@ -1,0 +1,6 @@
+using output
+var d : array[1..2] of string
+var e,k : integer
+var g : array[1..10] of integer
+e = 1
+k = 2

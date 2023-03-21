@@ -1,0 +1,2 @@
+qubyPublicProcedure.pt
+Quby method for assessing whether the Quby '*' keyword can be employed in conjunction with a procedure to designate it as public.

@@ -1,0 +1,17 @@
+qubyConstantDeclaration.pt
+This example is used to test Quby's constant declaration.
+An integer is defined and then assgined a constant value.
+
+qubyMultiDeclarations.pt
+Examine the Quby semantic phase to confirm that there are no problems with multiple consecutive declaration statements.
+
+qubyOneDeclaration.pt
+Examine the Quby semantic phase to confirm that there are no problems with one declaration statement.
+
+qubyStringDeclaration.pt
+This example is used to test Quby's string type.
+A string is defined in this code.
+
+qubyTypeDeclaration.pt
+This example is used to test Quby's type declaration.
+A simple type is defined here.

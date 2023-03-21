@@ -1,0 +1,2 @@
+emptyModuleQuby.pt
+Test case to verify that an empty Quby module successfully runs. 
